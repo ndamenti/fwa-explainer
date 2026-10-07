@@ -225,11 +225,13 @@ function renderHero() {
 
 /* ===== land cover figure ===== */
 function buildLandcover() {
-  var groups = [['Water & marsh', [11, 95], '#6fa8dc'], ['Developed', [21, 22, 23, 24], '#c45f4a'], ['Pine forest', [42], '#2f7a3d'], ['Swamp forest', [90], '#7fb3a6'], ['Other forest & shrub', [41, 43, 52], '#8fc27a'], ['Crops, pasture, grass, barren', [71, 81, 82, 31], '#dcd45a']];
-  var rows = GEO.sites.map(function (s) { var cnt = {}; var tot = 0; for (var y = s.r0; y < s.r0 + s.h; y++) for (var x = s.c0; x < s.c0 + s.w; x++) { if (Math.hypot((x - s.px) * 90, (y - s.py) * 90) > 25000) continue; var c = L.cls[y * L.W + x]; cnt[c] = (cnt[c] || 0) + 1; tot++; } return { label: s.id + ' · area within 25 km', segs: groups.map(function (g) { return { v: g[1].reduce(function (p, c) { return p + (cnt[c] || 0); }, 0) / tot * 100, color: g[2], name: g[0] }; }) }; });
+  var groups = [['Water & marsh', [0, 11, 95], '#6fa8dc'], ['Developed (towns, yards, roads)', [21, 22, 23, 24], '#c45f4a'], ['Pine forest', [42], '#2f7a3d'], ['Swamp forest', [90], '#7fb3a6'], ['Other forest & shrub', [41, 43, 52], '#8fc27a'], ['Crops, pasture, grass, barren', [71, 81, 82, 31], '#dcd45a']];
+  var leg = groups.map(function (g) { return { color: g[2], name: g[0] }; });
+  var rows = GEO.sites.map(function (s) { var cnt = {}; var tot = 0; for (var y = s.r0; y < s.r0 + s.h; y++) for (var x = s.c0; x < s.c0 + s.w; x++) { if (Math.hypot((x - s.px) * 90, (y - s.py) * 90) > 25000) continue; var c = L.cls[y * L.W + x]; cnt[c] = (cnt[c] || 0) + 1; tot++; } return { label: s.id + ' · ' + s.name.split(' — ')[0], segs: groups.map(function (g) { return { v: g[1].reduce(function (p, c) { return p + (cnt[c] || 0); }, 0) / tot * 100, color: g[2], name: g[0] }; }) }; });
+  hbars($('#chartLandcover'), { stacked: true, title: 'A. What the land is: share of the area within 25 km of each tower, by land cover', rows: rows, labelW: 170, rowH: 24, max: 100, tickFmt: function (v) { return v + '%'; }, valFmt: function (v) { return v.toFixed(1) + '% of the area'; }, legend: leg });
   var hu = {}; for (var i = 0; i < L.W * L.H; i++) if (L.county[i]) hu[L.cls[i]] = (hu[L.cls[i]] || 0) + L.units[i];
-  rows.push({ label: 'County housing units by class', segs: groups.map(function (g) { return { v: g[1].reduce(function (p, c) { return p + (hu[c] || 0); }, 0) / L.huTotal * 100, color: g[2], name: g[0] }; }) });
-  hbars($('#chartLandcover'), { stacked: true, rows: rows, labelW: 200, rowH: 24, max: 100, tickFmt: function (v) { return v + '%'; }, valFmt: function (v) { return v.toFixed(1) + '%'; }, legend: groups.map(function (g) { return { color: g[2], name: g[0] }; }) });
+  var dev = [21, 22, 23, 24].reduce(function (p, c) { return p + (hu[c] || 0); }, 0);
+  hbars($('#chartLandcover2'), { stacked: true, title: 'B. Where the homes are: ' + fmtN(L.huTotal) + ' county housing units by the land cover of their cell · ' + Math.round(dev / L.huTotal * 100) + '% sit on developed cells', rows: [{ label: 'Georgetown County homes', segs: groups.map(function (g) { return { v: g[1].reduce(function (p, c) { return p + (hu[c] || 0); }, 0) / L.huTotal * 100, color: g[2], name: g[0] }; }) }], labelW: 170, rowH: 24, max: 100, tickFmt: function (v) { return v + '%'; }, valFmt: function (v) { return v.toFixed(1) + '% of homes'; }, legend: leg });
 }
 
 /* ===== economics ===== */
