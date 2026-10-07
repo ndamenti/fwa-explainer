@@ -1,0 +1,1 @@
+Propagation pipeline. Run from this directory; downloads go in ./raw (see the top-level README for the file list). Outputs: dem90.tif, nlcd90.tif, housing90.tif, site_*.npz, sites.json, vectors.json and geodata.json (the packed layers the page embeds).

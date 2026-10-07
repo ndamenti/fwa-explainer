@@ -1,0 +1,13 @@
+{
+  "name": "fwa-explainer",
+  "version": "6.0.0",
+  "private": true,
+  "description": "Tarana vs 5G fixed wireless: interactive technical explainer with Longley-Rice coverage maps for Georgetown County, SC",
+  "scripts": {
+    "start": "serve -s . -l tcp://0.0.0.0:${PORT:-3000} --no-clipboard"
+  },
+  "dependencies": {
+    "serve": "^14.2.4"
+  },
+  "engines": { "node": ">=18" }
+}

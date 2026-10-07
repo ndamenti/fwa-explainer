@@ -1,0 +1,288 @@
+<div class="topbar"><div class="wrap">
+  <div class="brand">FWA <b>·</b> Tarana vs 5G</div>
+  <nav class="tabs" role="tablist" aria-label="Sections">
+    <button class="tab" role="tab" data-tab="verdict">Verdict</button>
+    <button class="tab" role="tab" data-tab="how">How they work</button>
+    <button class="tab" role="tab" data-tab="matrix">Capability matrix</button>
+    <button class="tab" role="tab" data-tab="budget">Link budget &amp; range</button>
+    <button class="tab" role="tab" data-tab="clutter">Clutter</button>
+    <button class="tab" role="tab" data-tab="maps">Coverage maps</button>
+    <button class="tab" role="tab" data-tab="econ">Capacity &amp; economics</button>
+    <button class="tab" role="tab" data-tab="others">Other proprietary FWA</button>
+    <button class="tab" role="tab" data-tab="starlink">Starlink yardstick</button>
+    <button class="tab" role="tab" data-tab="missing">What you may be missing</button>
+    <button class="tab" role="tab" data-tab="method">Method &amp; sources</button>
+  </nav>
+  <span class="ver" id="ver">v1</span>
+</div></div>
+
+<main class="wrap">
+
+<!-- ============================ VERDICT ============================ -->
+<section class="panel" id="tab-verdict">
+  <div class="hero">
+    <div>
+      <div class="eyebrow">Terrestrial fixed wireless · technical explainer · test bed: Georgetown County, South Carolina</div>
+      <h1 style="margin-top:10px">Tarana vs 5G fixed wireless</h1>
+      <p class="thesis">In the Lowcountry the trees decide, not the towers. Every sub-7 GHz radio sees near free-space loss to 25 km over this ground (highest point in the county: 39 m). What separates the technologies is how many decibels each can spend on pine canopy, swamp forest and house walls at the customer's end, and whether the uplink survives the trip back.</p>
+      <p class="small">Every number is tagged <span class="tag m">M</span> measured, <span class="tag c">C</span> claim-anchored or <span class="tag d">D</span> derived here, with the source in the last tab. Coverage figures below are computed live from a Longley-Rice terrain run on three real FCC-registered towers plus a land-cover clutter model; change any assumption on the map tab and they move.</p>
+    </div>
+    <div>
+      <div class="eyebrow">Housing units in Georgetown County reachable at ≥100/20 Mbps from the same three towers <span class="tag d">D</span></div>
+      <div class="tiles" id="heroTiles"></div>
+      <div class="small">Of <span class="num" id="heroHU">—</span> housing units in the county (2020 Census blocks), <span class="num" id="heroInRange">—</span> lie within 25 km of at least one of the three sites. Leaf-on, median propagation, 4 dB fade margin, default link budgets.</div>
+    </div>
+  </div>
+
+  <div class="cols">
+    <div class="card">
+      <h3>What the model says</h3>
+      <p>Tarana's edge is real and it is mostly antenna physics. Sixteen radio chains at the base node and eight at the remote node buy roughly 9 dB of uplink and 3–4 dB of downlink over a WISP-grade 5G NR sector with a 17 dBi outdoor CPE, and the two to four 40 MHz carriers buy capacity on top. In this clutter that translates into about <span id="vTaranaVsNr">—</span> more county homes at 100/20 from the same towers.</p>
+      <p>The larger lever is where the CPE sits. Moving an MNO C-band gateway from a window sill to a 17 dBi roof panel at 6 m roughly doubles its 100/20 footprint; raising Tarana's customer radio (the Remote Node, RN) from a 6 m eave mount to a 10 m pole adds another <span id="vTarana10">—</span>. No operator gets around the pine canopy; they only choose how much of the link budget to spend on it.</p>
+    </div>
+    <div class="card">
+      <h3>What it means commercially</h3>
+      <p>MNO macro FWA is a capacity product sold address by address into fallow mobile capacity. It wins on price and zero truck rolls, and it is already shrinking in cities where sectors fill up. Dedicated CBRS 5G NR reaches about two-thirds of Tarana's footprint for roughly 40% of the sector hardware cost, but with half the spectrum per sector and a 3GPP vendor base that just lost Cambium's cnRanger and never gained a strong CBRS small-cell champion.</p>
+      <p>Tarana is the performance leader and a single-vendor bet: a 4-BN G2 site is about $155k of radios, the RN costs 3–5× a 3GPP CPE, and the company is private, flat on its last three rounds, and dependent on CBRS and 6 GHz rules it does not control. mmWave FWA covers nothing here beyond the first few hundred metres of open ground.</p>
+    </div>
+  </div>
+
+  <div class="secthead"><span class="eyebrow">Key</span><h2>The six configurations compared on this page</h2></div>
+  <p>Every chart and map on the site uses these six, each with one fixed colour. "Tarana CBRS" and "Tarana 6 GHz" are the same Tarana hardware family (G1 Base Node + Remote Node, or G2) running in two different bands; they are separated because the two bands have very different power limits and bandwidth. The companion names are explained in full on the "How they work" and "Capability matrix" tabs.</p>
+  <div class="tblwrap"><table id="keyTbl" class="compact wrap"></table></div>
+
+  <div class="secthead"><span class="eyebrow">Fig. 1</span><h2>Homes each configuration can serve from the same three towers</h2></div>
+  <p>One bar per configuration, in its colour. The bar is the number of Georgetown County homes (2020 Census, 34,587 in the county) that would get at least 100 Mbps down and 20 Mbps up from the best of the three modelled towers, with the standard customer equipment listed in the key above. Everything else about the model is at its default setting.</p>
+  <figure class="figure"><div id="chartHero"></div><figcaption>Homes at ≥100/20 Mbps (the FCC "served" line and the BEAD target). The table below adds the slower service classes. <span class="tag d">D</span> Longley-Rice + NLCD clutter model; the map tab lets you change every assumption and recomputes these counts.</figcaption></figure>
+  <div class="tblwrap"><table id="heroTbl" class="compact"></table></div>
+  <div class="cap">Served = ≥100 down / 20 up. Underserved = at least 25/3 but below 100/20. Connects = some service below 25/3. Numbers are homes in Georgetown County; percentages are of the county's 34,587 homes.</div>
+
+  <div class="secthead"><span class="eyebrow">Fig. 1b</span><h2>What moving the customer antenna does</h2></div>
+  <p>Same towers, same radios; only the customer end changes. The standard placement is how each product is normally sold or installed. The alternative is a better placement a willing operator could use.</p>
+  <div class="tblwrap"><table id="cpeTbl" class="compact wrap"></table></div>
+  <div class="cap">Homes at ≥100/20 Mbps from the same three towers. <span class="tag d">D</span></div>
+
+  <div class="secthead"><span class="eyebrow">Fig. 2</span><h2>The link budget at 5 km inside pine forest</h2></div>
+  <p>A worked example for one customer: 5 km from the tower, antenna inside the pine canopy (about 400 m of foliage along the ray, which saturates the ITU-R P.833 model at the band's maximum loss). Read each column top to bottom: start with what the tower radiates, add the customer antenna's gain, subtract each loss, and compare what is left with the receiver's noise floor. The difference is the signal-to-noise ratio, and that sets the speed.</p>
+  <figure class="figure"><div class="tblwrap" style="border:0"><table id="budgetTbl" class="compact"></table></div><div id="chartSnr" style="margin-top:14px"></div><figcaption>Downlink and uplink at 5 km, CPE at its standard placement, leaf-on, default margins. Noise floor = −174 dBm/Hz + 10 log(bandwidth) + receiver noise figure. The uplink uses the sub-band width that gives the best rate, which is why its noise floor is lower. <span class="tag d">D</span></figcaption></figure>
+
+  <div class="callout"><p><b>Reading guide.</b> Tabs 2–3 explain the radios and tabulate every capability with sources. Tabs 4–6 are interactive: an analytic link-budget calculator, a per-land-cover performance chart, and the terrain-and-clutter coverage maps. Tab 7 is the unit-economics calculator with Starlink and fiber as references. Tab 10 lists the things an evaluation of these technologies usually misses. Tab 11 documents the method, the parameters and all 80 sources.</p></div>
+</section>
+
+<!-- ============================ HOW THEY WORK ============================ -->
+<section class="panel" id="tab-how">
+  <div class="eyebrow">Tab 2</div><h2>How each system actually works</h2>
+  <p class="lead">Four architectures share the same physics and spend their decibels very differently. The diagrams are schematic; the parameter values are the ones used in the model.</p>
+
+  <div class="cols2">
+    <div class="card">
+      <h3><span class="swatch" style="background:var(--s1)"></span> MNO macro FWA (T-Mobile, Verizon, AT&amp;T)</h3>
+      <div id="diagMno"></div>
+      <p>A 64T64R massive-MIMO sector on an existing mobile macro site (typically 24 dBi array gain, 320–480 W, 100–160 MHz of C-band or 2.5 GHz) forms a beam to an indoor gateway the customer places at a window. US C-band rules allow 1,640 W/MHz EIRP, so the radio, not the rule, is the limit: about 79 dBm per 100 MHz per beam <span class="tag d">D</span>. The gateway has 4×4 MIMO but near-zero antenna gain and sits 2 m up behind glass; the uplink is 23–26 dBm from a plastic box.</p>
+      <p>The commercial engine is capacity, not coverage: T-Mobile forecasts peak mobile load in ~36 million hex bins and sells home internet only where fallow capacity exists, caps the share per bin, and deprioritises home users behind mobile at congestion <span class="tag c">C</span>. FWA is roughly half of Verizon's traffic for ~3% of service revenue <span class="tag c">C</span>. Mid-2026: 17–18 M US subscribers across the big three <span class="tag m">M</span>; address-level availability fell ~2% in big cities in July 2026 as sectors filled <span class="tag m">M</span>.</p>
+    </div>
+    <div class="card">
+      <h3><span class="swatch" style="background:var(--s3)"></span> Dedicated 5G NR / LTE in CBRS (WISP-grade)</h3>
+      <div id="diagCbrs"></div>
+      <p>A WISP or rural telco mounts a Category B CBSD (47 dBm/10 MHz EIRP, professional install) on a leased tower and runs 10–150 MHz of General Authorized Access spectrum under a Spectrum Access System. Radios range from 2T2R integrated units (Baicells Aurora 243, 14.5 dBi) to 8T8R and 32T32R macro-class gear; the customer gets a pro-installed 14–17 dBi outdoor panel at the eave, often registered as a Cat A CPE-CBSD (30 dBm/10 MHz) <span class="tag c">C</span>.</p>
+      <p>Strength: a multi-vendor 3GPP ecosystem, cheap CPE ($250–400), and spectrum that NTIA counts as "reliable broadband" for BEAD <span class="tag c">C</span>. Weakness: the sector is one 40–60 MHz carrier in practice, GAA is shared with 430,000+ other CBSDs <span class="tag c">C</span>, and the fixed panel loses effective gain when the signal arrives via multipath rather than along boresight. Operators report 100 Mbps reliably to ~6 miles with 200–250 ft mounts <span class="tag c">C</span>.</p>
+    </div>
+    <div class="card">
+      <h3><span class="swatch" style="background:var(--s4)"></span> mmWave 5G FWA (28 / 39 GHz)</h3>
+      <div id="diagMmw"></div>
+      <p>Verizon's 2018 launch product: 400–800 MHz channels at 28 GHz from pole-mounted small cells to a window-mounted phased-array receiver. Free-space loss alone is 111 dB at 300 m; standard glass costs 7.6 dB, low-E glass 28.5 dB, a single tree 10–30 dB, and rain 4.6 dB/km at 25 mm/h <span class="tag d">D</span>. In Sacramento the effective radius was ~700 ft and ~27 eligible addresses per cell <span class="tag c">C</span>. Verizon pivoted residential FWA to C-band after the 2021 auction and now aims mmWave at multi-dwelling units (Starry acquisition, Oct 2025) <span class="tag c">C</span>.</p>
+      <p>In the model the mmWave radio is placed on the same tower top as the others, its best case. It still needs a clutter-free ray; in Georgetown County that exists over water, marsh and the first few hundred metres of town.</p>
+    </div>
+    <div class="card">
+      <h3><span class="swatch" style="background:var(--s2)"></span> Tarana G1 / G2 (ngFWA)</h3>
+      <div id="diagTarana"></div>
+      <p>A proprietary, non-3GPP air interface built around <em>distributed massive MIMO</em>: 16 radio chains at the Base Node and 8 at the Remote Node, with beamforming weights recomputed ~5,000 times a second per sub-band so the link uses whatever multipath exists rather than a single boresight ray <span class="tag c">C</span>. Two cancellation functions are claimed: nulling of the network's own co-channel sectors ("up to 45 dB", allowing every sector to reuse one channel) and asynchronous-burst cancellation of outside interferers such as Wi-Fi ("up to 40 dB") <span class="tag c">C</span>.</p>
+      <p>FCC grants pin the hardware down: the G2 BN radiates 48.45 dBm in CBRS (42.4 dBm/10 MHz, below the Cat B cap), 36 dBm in 5/6 GHz; per-port element gain is 13.2–14.3 dBi at 3.5 GHz and 15.6–16.9 dBi at 6 GHz; the RN has 8 cross-polarised 14.5 dBi antennas <span class="tag m">M</span>. G1: 80 MHz (2×40), 800 Mbps per link, 2.4 Gbps per BN, up to 250 RNs. G2 (Sept 2025): one multiband radio spanning 3.55–3.70, 5.7–5.9 and 5.9–6.9 GHz, four 40 MHz carriers in any band mix, 6.4 Gbps per BN, 512 RNs, backward-compatible with G1 RNs <span class="tag c">C</span>. Preseem's fleet data across tens of thousands of RNs: median 24-hour link rate 434 Mbps on CBRS, 774 Mbps on 4-carrier 6 GHz <span class="tag m">M</span>.</p>
+    </div>
+  </div>
+
+  <div class="secthead"><span class="eyebrow">Fig. 3</span><h2>Spectrum each system can use</h2></div>
+  <figure class="figure"><div id="chartSpectrum"></div><figcaption>Band edges on a log frequency axis (bar width is the whole band, so the 200 MHz C-band block and the 950 MHz 6 GHz block look narrow next to the 14 GHz of V-band); the right-hand column gives the bandwidth one operator typically holds and the power rule. Hover a bar for who uses it. <span class="tag c">C</span> FCC Parts 27, 30, 96 and 15; operator holdings per sources 30–32, 39–41.</figcaption></figure>
+
+  <div class="callout"><p><b>The uplink is the gate.</b> Every architecture above is asymmetric by rule: a CBRS end-user device may radiate 23 dBm/10 MHz, a CPE-CBSD 30 dBm/10 MHz, a 6 GHz standard-power client 30 dBm total, a C-band handset-class gateway 2 W EIRP, while the base end runs 47–79 dBm. Downlink maps flatter every technology; the 20 Mbps uplink in the 100/20 definition is what actually bounds the footprint, and it is where Tarana's 16-chain receive array matters most.</p></div>
+</section>
+
+<!-- ============================ MATRIX ============================ -->
+<section class="panel" id="tab-matrix">
+  <div class="eyebrow">Tab 3</div><h2>Capability matrix</h2>
+  <p class="lead">Every cell carries its evidence class. Where vendors publish a peak and the field publishes a median, both appear.</p>
+  <div class="tblwrap"><table class="matrix" id="matrix"></table></div>
+  <div class="secthead"><span class="eyebrow">Summary</span><h2>Strengths and weaknesses</h2></div>
+  <div class="cols" id="swCards"></div>
+</section>
+
+<!-- ============================ LINK BUDGET ============================ -->
+<section class="panel" id="tab-budget">
+  <div class="eyebrow">Tab 4</div><h2>Link budget and range</h2>
+  <p class="lead">An analytic calculator: smooth earth, free-space path loss, then the same clutter, foliage, building-penetration and antenna models the maps use. Change anything; the chart, the range table and the coverage maps on the next tabs all recompute from the same parameter set.</p>
+  <div class="split">
+    <div class="ctl sticky card">
+      <div class="fld"><label for="lbTech">Technology</label><select id="lbTech"></select></div>
+      <div class="fld"><label for="lbCls">Land cover at the customer</label><select id="lbCls"></select></div>
+      <div class="fld"><label for="lbDepth">Foliage along the ray at the customer end (m)</label><div class="row"><input type="range" id="lbDepth" min="0" max="600" step="10" value="0"><output id="lbDepthO">0 m</output></div></div>
+      <div class="fld"><label for="lbHt">Transmit antenna height (m AGL)</label><div class="row"><input type="range" id="lbHt" min="15" max="120" step="5" value="60"><output id="lbHtO">60 m</output></div></div>
+      <div class="fld"><label for="lbEirp">Base EIRP per carrier (dBm)</label><div class="row"><input type="range" id="lbEirp" min="20" max="85" step="0.5"><output id="lbEirpO"></output></div></div>
+      <div class="fld"><label for="lbBw">Channel bandwidth per carrier (MHz)</label><div class="row"><input type="range" id="lbBw" min="10" max="400" step="10"><output id="lbBwO"></output></div></div>
+      <div class="fld"><label for="lbCpeG">CPE antenna gain incl. combining (dBi)</label><div class="row"><input type="range" id="lbCpeG" min="0" max="30" step="0.5"><output id="lbCpeGO"></output></div></div>
+      <div class="fld"><label for="lbCpeH">CPE height (m)</label><div class="seg" id="lbCpeH"></div></div>
+      <div class="fld"><label for="lbO2i">Building penetration</label><select id="lbO2i"><option value="none">None (outdoor CPE)</option><option value="window">Window sill, standard glass</option><option value="windowLowE">Window sill, low-E glass</option><option value="low">Interior, 3GPP low-loss</option><option value="high">Interior, 3GPP high-loss</option></select></div>
+      <div class="fld"><label for="lbUl">CPE uplink EIRP (dBm)</label><div class="row"><input type="range" id="lbUl" min="10" max="55" step="0.5"><output id="lbUlO"></output></div></div>
+      <div class="fld"><label for="lbBsG">Base receive gain (dBi)</label><div class="row"><input type="range" id="lbBsG" min="10" max="35" step="0.5"><output id="lbBsGO"></output></div></div>
+      <div class="fld"><label for="lbFade">Fade / location margin (dB)</label><div class="row"><input type="range" id="lbFade" min="0" max="15" step="1"><output id="lbFadeO"></output></div></div>
+      <div class="fld"><label for="lbInt">External interference margin (dB)</label><div class="row"><input type="range" id="lbInt" min="0" max="12" step="0.5"><output id="lbIntO"></output></div></div>
+      <div class="fld"><label for="lbNlos">NLOS gain penalty for fixed panels (dB)</label><div class="row"><input type="range" id="lbNlos" min="0" max="10" step="0.5"><output id="lbNlosO"></output></div></div>
+      <button class="btn ghost" id="lbReset">Reset this technology to defaults</button>
+    </div>
+    <div>
+      <figure class="figure"><div id="chartLb"></div><figcaption>Achievable downlink and uplink rate versus distance for the selected technology and environment. Horizontal guides mark 25/3 and 100/20 Mbps. <span class="tag d">D</span></figcaption></figure>
+      <figure class="figure"><div id="chartLbSnr"></div><figcaption>Received SINR versus distance (downlink solid, uplink dashed at the scheduler's best sub-band width). Service needs ≈−5 dB for the lowest MCS, ≈10 dB for 16QAM, ≈20 dB for 64QAM-high, ≈22+ dB for 256QAM. <span class="tag d">D</span></figcaption></figure>
+      <div class="card"><h3>Maximum range for 100/20 Mbps by environment, all technologies</h3><div class="tblwrap" style="border:0"><table id="rangeTbl" class="compact"></table></div><div class="cap">Range at which the selected environment still yields ≥100 Mbps down and ≥20 Mbps up, with the transmit height above. Foliage depth per environment is the value that the terrain geometry typically produces for that class (0 m open; 40 m shrub; 150 m deciduous/mixed; 400 m pine and swamp forest). Dash means the environment fails at every distance. <span class="tag d">D</span></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ CLUTTER ============================ -->
+<section class="panel" id="tab-clutter">
+  <div class="eyebrow">Tab 5</div><h2>Performance through ground clutter</h2>
+  <p class="lead">Georgetown County is 813 square miles of land, of which about three-quarters is pine plantation, swamp forest and marsh. The clutter model maps each NLCD 2021 land-cover class to a representative obstacle height, a foliage flag and (for developed classes) a building-clutter term; the ray geometry from the real tower then decides how much foliage each customer's link crosses.</p>
+  <div class="split">
+    <div class="ctl sticky card">
+      <div class="fld"><label>Distance from tower</label><div class="seg" id="clDist"></div></div>
+      <div class="fld"><label>Season</label><div class="seg" id="clSeason"></div></div>
+      <div class="fld"><label>Metric</label><div class="seg" id="clMetric"></div></div>
+      <div class="fld"><label for="clScale">Clutter loss scale</label><div class="row"><input type="range" id="clScale" min="0.5" max="1.5" step="0.05" value="1"><output id="clScaleO">100%</output></div></div>
+      <p class="small">Foliage depth per class is what the ray geometry typically produces at 6 m CPE height for these towers: forest classes saturate (≥400 m), shrub ~40 m, open classes 0 m. Developed classes carry ITU-R P.2108 building clutter scaled by intensity.</p>
+    </div>
+    <div>
+      <figure class="figure"><div id="chartClutter"></div><figcaption>Achievable rate by land-cover class for every technology at the chosen distance and season. Technologies that fail a class are shown as no bar. <span class="tag d">D</span></figcaption></figure>
+      <figure class="figure"><h3>Clutter loss by class and band (dB, CPE at 6 m, leaf-on)</h3><div class="tblwrap" style="border:0"><table id="clutterTbl" class="compact"></table></div><figcaption>Foliage term from ITU-R P.833 one-terminal-in-woodland (A<sub>m</sub> = 1.37 f<sup>0.42</sup>; Southern England measured 46 dB at 3.6 GHz through 200 m of mixed forest), building term from ITU-R P.2108 scaled by development intensity and CPE height below the roof line. <span class="tag c">C</span> model constants, <span class="tag d">D</span> values.</figcaption></figure>
+      <figure class="figure"><div id="chartLandcover"></div><figcaption>Land cover within 25 km of each modelled tower (NLCD 2021), and where the county's housing units sit. Homes cluster in the developed classes even in a forested county, which is why housing-weighted coverage is better than area coverage for every technology. <span class="tag m">M</span></figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ MAPS ============================ -->
+<section class="panel" id="tab-maps">
+  <div class="eyebrow">Tab 6</div><h2>Coverage maps: three real towers, real terrain, real land cover</h2>
+  <p class="lead">Longley-Rice (ITM v1.2.2) point-to-point losses were computed on USGS 3DEP elevation along 360 radials to 25 km from each tower, for three bands and three CPE heights; foliage depth and clutter line-of-sight come from the same ray geometry against NLCD 2021 obstacle heights. The page recomputes the link budget for every 90 m cell when you change a control.</p>
+  <div class="split">
+    <div class="ctl sticky card">
+      <div class="fld"><label>Site</label><div class="seg" id="mpSite"></div></div>
+      <div class="fld"><label>Technology</label><div class="seg" id="mpTech"></div></div>
+      <div class="fld"><label>Show</label><div class="seg" id="mpMetric"></div></div>
+      <div class="fld" id="mpCpeWrap"><label>Customer equipment</label><div class="seg" id="mpCpe"></div></div>
+      <div class="fld"><label>Season</label><div class="seg" id="mpSeason"></div></div>
+      <div class="fld"><label for="mpFade">Fade / location margin (dB)</label><div class="row"><input type="range" id="mpFade" min="0" max="15" step="1" value="4"><output id="mpFadeO">4 dB</output></div></div>
+      <div class="fld"><label for="mpScale">Clutter loss scale</label><div class="row"><input type="range" id="mpScale" min="0.5" max="1.5" step="0.05" value="1"><output id="mpScaleO">100%</output></div></div>
+      <div class="fld"><label>Base layer</label><div class="seg" id="mpBase"></div></div>
+      <div id="mpLegend"></div>
+      <div class="readout" id="mpRead">Hover or tap the map for a per-cell link budget.</div>
+      <button class="btn" id="mpCompare">Compare all technologies at these settings</button>
+    </div>
+    <div>
+      <div class="mapbox" id="mapbox"><canvas id="mapCanvas"></canvas><svg class="ov" id="mapOv"></svg></div>
+      <div class="cap" id="mapCap"></div>
+      <div class="card" style="margin-top:14px"><h3 id="mpStatsTitle">Homes covered</h3><div class="statbars" id="mpStats"></div><div class="cap">Georgetown County housing units (2020 Census blocks, 34.6k in county) by best tier across the selected site(s). Cells outside the county are drawn but not counted.</div></div>
+      <div class="card" style="margin-top:14px" id="mpCompareCard" hidden><h3>All technologies, same settings</h3><div class="tblwrap" style="border:0"><table id="mpCompareTbl"></table></div></div>
+      <div class="card" style="margin-top:14px"><h3>The three sites</h3><div class="tblwrap" style="border:0"><table id="siteTbl" class="compact wrap"></table></div><div class="cap">All three are registered in the FCC Antenna Structure Registration database (status Constructed). Radio centre heights are modelling choices below the structure top; the Plantersville structure is a 146 m tall tower on which a WISP would realistically mount at 60–90 m. The 25 km study radius is the model's, not a claim about any product.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ ECONOMICS ============================ -->
+<section class="panel" id="tab-econ">
+  <div class="eyebrow">Tab 7</div><h2>Capacity and unit economics</h2>
+  <p class="lead">Coverage says who <em>can</em> be served; capacity says how many actually are, and the per-sector radio cost decides what each passing and each subscriber costs. The calculator takes passings per site from the coverage model (or your own number) and applies published hardware prices, lease and backhaul benchmarks.</p>
+  <div class="split">
+    <div class="ctl sticky card">
+      <div class="fld"><label for="ecPass">Passings per site</label><div class="seg" id="ecPassMode"></div><div class="row" style="margin-top:6px"><input type="range" id="ecPass" min="200" max="8000" step="100" value="2000"><output id="ecPassO">2,000</output></div></div>
+      <div class="fld"><label for="ecTake">Take rate (%)</label><div class="row"><input type="range" id="ecTake" min="5" max="60" step="1" value="25"><output id="ecTakeO">25%</output></div></div>
+      <div class="fld"><label for="ecArpu">ARPU ($/month)</label><div class="row"><input type="range" id="ecArpu" min="35" max="130" step="1" value="65"><output id="ecArpuO">$65</output></div></div>
+      <div class="fld"><label for="ecBh">Busy-hour demand per subscriber (Mbps)</label><div class="row"><input type="range" id="ecBh" min="2" max="15" step="0.5" value="5.2"><output id="ecBhO">5.2</output></div></div>
+      <div class="fld"><label for="ecLease">Tower lease ($/month)</label><div class="row"><input type="range" id="ecLease" min="0" max="3000" step="50" value="800"><output id="ecLeaseO">$800</output></div></div>
+      <div class="fld"><label for="ecBh2">Backhaul ($/month)</label><div class="row"><input type="range" id="ecBh2" min="0" max="6000" step="100" value="2000"><output id="ecBh2O">$2,000</output></div></div>
+      <div class="fld"><label for="ecSite">Site works: mounts, power, structural, backhaul radio ($)</label><div class="row"><input type="range" id="ecSite" min="5000" max="80000" step="1000" value="25000"><output id="ecSiteO">$25,000</output></div></div>
+      <div class="fld"><label for="ecOpex">Other opex per subscriber ($/month: support, NOC, SAS, truck rolls, bad debt)</label><div class="row"><input type="range" id="ecOpex" min="5" max="40" step="1" value="16"><output id="ecOpexO">$16</output></div></div>
+      <div class="fld"><label for="ecChurn">Annual churn (%)</label><div class="row"><input type="range" id="ecChurn" min="5" max="40" step="1" value="15"><output id="ecChurnO">15%</output></div></div>
+      <p class="small">Hardware prices are US distributor list (Oct 2026) or published quotes; see the matrix and sources 19, 20, 45, 59–63. MNO FWA has no incremental site capex in this frame; its cost is the opportunity cost of mobile capacity.</p>
+    </div>
+    <div>
+      <figure class="figure"><div id="chartCapex"></div><figcaption>Capital cost per subscriber (site share plus CPE and install) at the chosen take rate, with Starlink's and fiber's benchmarks for reference. Starlink: average BEAD subsidy per location across all state plans; fiber: FBA/Cartesian 2025 aerial median at 10 locations per mile, drops excluded. <span class="tag d">D</span> from <span class="tag c">C</span>/<span class="tag m">M</span> inputs.</figcaption></figure>
+      <div class="tblwrap"><table id="econTbl" class="econ"></table></div>
+      <div class="cap">Capacity-limited subscribers = site downlink capacity ÷ busy-hour demand per subscriber. A site is capacity-bound when that number is below passings × take rate. Payback = site capex share + CPE + install, divided by monthly contribution (ARPU − opex − lease and backhaul per sub). Tarana BN prices: G1 BN-3 $24,470, G2 BN $38,640, G1 BN-6 $21,410; RN-3 $1,290, RNm $1,460, RNv-6 $840 <span class="tag c">C</span>. CBRS 5G NR: $9,000 per sector radio+antenna <span class="tag c">C</span>, CPE $350. mmWave: $25,000 per node <span class="tag c">C</span>, CPE $300.</div>
+      <figure class="figure" style="margin-top:14px"><div id="chartCapacity"></div><figcaption>Subscribers one site can carry at busy hour versus the subscribers the coverage footprint would produce at the chosen take rate. Where the coverage bar exceeds the capacity bar, the operator needs more sectors, more spectrum or a denser grid before it needs more range. <span class="tag d">D</span></figcaption></figure>
+      <div class="card"><h3>Benchmarks behind the sliders</h3>
+        <p>Busy-hour demand: OpenVault Q2 2026 average 711 GB/month ≈ 2.2 Mbps continuous; with ~10% of daily traffic in the busy hour that is ≈5.2 Mbps per subscriber <span class="tag d">D</span>. Preseem's 2026 fixed-wireless fleet shows 8 Mbps "average active consumption" and more than 75% of access points serving ten or fewer subscribers <span class="tag m">M</span>.</p>
+        <p>Tower rent: rural single-tenant carrier ground leases $500–1,800/month; WISP sub-tenant anecdotes $100–1,800 plus a $2,000 structural study <span class="tag c">C</span>. E-band backhaul links register for $75 per link per 10 years; rural IP transit quoted at ~$3/Mbps/month <span class="tag c">C</span>. Churn: US broadband blended monthly churn 1.25% (S&amp;P Kagan, Q3 2025) ≈ 14% annual <span class="tag m">M</span>; WISP self-reports range from under 3% to over 4% per year, which looks optimistic <span class="tag c">C</span>. ARPU: WISP rate cards $30–170, Verizon FWA blended ≈$48, Starlink $55–130 <span class="tag c">C</span>.</p>
+        <p>BEAD evidence on cost per location, all <span class="tag m">M</span>: Tennessee bid averages fiber $4,903, fixed wireless $1,289, LEO $886; Nextlink's awards $642–2,479; Starlink's national average $1,383; Kuiper's $728; South Carolina's 2026 scope 19,022 locations for $35.8M with Kuiper at $601 and Starlink at $1,920 per location.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ OTHERS ============================ -->
+<section class="panel" id="tab-others">
+  <div class="eyebrow">Tab 8</div><h2>Where Tarana sits among proprietary fixed wireless</h2>
+  <p class="lead">Tarana is not the only non-3GPP radio; it is the only one built from scratch for non-line-of-sight. The rest of the category is 802.11-derived or TDMA point-to-multipoint that wants a clear path, and in September 2026 the category's largest vendor failed.</p>
+  <div class="callout"><p><b>Cambium Networks collapsed on 11 September 2026</b> (more than half its staff cut, UK entity in administration, Nasdaq delisting in August). On 22 September Airspan bought PMP 450, PTP 670/700, cnWave 60 GHz, cnReach and the LINKPlanner/cnHeat/cnMaestro tools with 135 staff; <b>ePMP, the volume product, was excluded and has no buyer</b>. Per Preseem, Cambium gear sat behind 39.5% of US fixed-wireless CPE and 28.5% of access points; Tarana was 8.3% of the base but "taking the growth spend" <span class="tag c">C</span>. Airspan itself had sold Mimosa to Radisys in 2023. Any FWA diligence now carries an orphaned-vendor scenario.</p></div>
+  <div class="tblwrap"><table id="othersTbl"></table></div>
+  <div class="cap">Prices are US/CA reseller list in Oct 2026 and move with promotions; ranges are planning values from vendor material and operator reports. <span class="tag c">C</span></div>
+  <div class="cols" style="margin-top:18px">
+    <div class="card"><h3>Head-to-head evidence</h3><p>Tarana's own Michigan CBRS test against an 8×8 MU-MIMO competitor (consistent with a PMP 450m) reported 266 vs 99 Mbps at 1.85 miles LOS, 210 vs 19 Mbps under interference at 2.47 miles, and 257 Mbps versus no link at 2.16 miles NLOS and 5.96 miles; the G1 used 80 MHz against the competitor's 40 MHz <span class="tag c">C</span>. No independent, instrumented Tarana-versus-5G-NR comparison exists in the trade press. Operator statements are consistent in direction: Resound reports 40% fewer towers and 6× subscribers per tower; Wisper dropped 300 planned towers for ~$5M/year of opex <span class="tag c">C</span>.</p></div>
+    <div class="card"><h3>What the category tells you about Tarana risk</h3><p>Proprietary FWA has always been a two-sided bet: the radio and the company. Cambium's installed base will keep running (the radios work without the vendor until the cloud controller or spares run out), which is the realistic failure mode to model for Tarana as well: Tarana Cloud Suite is the hosted NMS for activation, firmware and SLA profiles. Tarana has raised about $457M; its share price has been flat at $1.07 since 2023 across three rounds and there is no IPO filing <span class="tag c">C</span>. Revenue was "nearly $100M" in the year to September 2023 <span class="tag c">C</span>.</p></div>
+  </div>
+</section>
+
+<!-- ============================ STARLINK ============================ -->
+<section class="panel" id="tab-starlink">
+  <div class="eyebrow">Tab 9</div><h2>Starlink as the yardstick</h2>
+  <p class="lead">Every rural fixed-wireless sale in 2026 is made against a dish the customer can order tonight. Starlink is now a top-ten US ISP, won 48% of South Carolina's BEAD locations with Kuiper, and sets the price and speed expectations a WISP has to beat.</p>
+  <div class="cols">
+    <figure class="figure"><div id="chartYard1"></div><figcaption>Median download and upload, US, most recent independent measurement for each: Ookla Q2 2026 for the MNOs, Ookla Q1 2026 for Starlink, Preseem fleet median link rate for Tarana (achievable link rate, not a plan speed test; sold median plan on Tarana RNs is 102 Mbps). <span class="tag m">M</span></figcaption></figure>
+    <figure class="figure"><div id="chartYard2"></div><figcaption>Monthly list price of the entry and top residential tiers, autopay, before bundle discounts. WISP range is the spread of Nextlink, Rise, Resound and Wisper rate cards. <span class="tag c">C</span></figcaption></figure>
+  </div>
+  <div class="tblwrap" style="margin-top:14px"><table id="yardTbl"></table></div>
+  <div class="cols" style="margin-top:18px">
+    <div class="card"><h3>Where Starlink is weaker</h3><p>Capacity is sold per cell, exactly like an MNO sector: waitlists were replaced in 2026 by one-time "demand surcharges" of $100–1,500 by location <span class="tag m">M</span>. Median upload sits at 20 Mbps or less in most states; only 44.7% of users met 100/20 in Q4 2025, up from 17.4% a year earlier <span class="tag m">M</span>. Latency is 25–60 ms and physics-bound. Trees matter here too: a dish needs an unobstructed view of a large sky arc, and in pine country that often means a mast or a roof peak, which erodes the self-install advantage. The V3 satellite and Starship capacity step-change remains unconfirmed in orbit as of this writing.</p></div>
+    <div class="card"><h3>Where Starlink is stronger</h3><p>Zero towers, zero backhaul, zero spectrum fights, national marketing, and a cost-per-location in BEAD ($1,383 national average; $1,920 in South Carolina) that no terrestrial build matches at low density <span class="tag m">M</span>. Terrestrial FWA wins where density supports a sector (roughly 100+ passings per sector at ordinary take rates), where the upload matters (video calls, cameras, backups), and where an operator wants a network it controls. The companion Starlink Mobile analysis covers the direct-to-cell side of this story.</p></div>
+  </div>
+</section>
+
+<!-- ============================ MISSING ============================ -->
+<section class="panel" id="tab-missing">
+  <div class="eyebrow">Tab 10</div><h2>What an evaluation of these technologies usually misses</h2>
+  <p class="lead">Fourteen items, from the physics to the regulatory calendar. Each one changes either the footprint, the capacity or the risk case, and several are not in any vendor deck.</p>
+  <div class="missing" id="missingCards"></div>
+</section>
+
+<!-- ============================ METHOD ============================ -->
+<section class="panel" id="tab-method">
+  <div class="eyebrow">Tab 11</div><h2>Method, parameters, sources and glossary</h2>
+  <div class="cols">
+    <div class="card"><h3>Propagation pipeline</h3>
+      <p>Terrain: USGS 3DEP 1 arc-second (≈30 m) elevation, resampled to a 90 m UTM 17N grid. Land cover: NLCD 2021. Towers: FCC Antenna Structure Registration weekly extract (4 Oct 2026), county FIPS 45043, status Constructed; three selected for clutter diversity. Housing: 2020 Census block housing counts (TIGER 2023 TABBLOCK20), distributed evenly over each block's cells.</p>
+      <p>Path loss: ITS Irregular Terrain Model v1.2.2 (Longley-Rice) in point-to-point mode via the <span class="mono">itmlogic</span> port, median (50% time, 50% location, 50% confidence), vertical polarisation, continental temperate climate, N<sub>s</sub> = 314, average ground (ε = 15, σ = 0.005 S/m), 360 radials per tower, 90 m steps to 25 km, at 2.6, 3.6 and 6.0 GHz and CPE heights of 2, 6 and 10 m; free-space inside 1 km. Other bands are shifted by 20 log(f/f<sub>layer</sub>). 28 GHz is outside ITM's range and uses free-space loss plus gaseous and rain terms with a clutter line-of-sight test.</p>
+      <p>Clutter: each NLCD class carries a representative obstacle height (pine 22 m, mixed 21 m, deciduous 20 m, swamp forest 18 m, developed 5–15 m, shrub 3 m). Along every radial the ray from the antenna to the CPE is tested against terrain plus obstacle height with 4/3-earth bulge; foliage depth is the length of forested cells in the obstructed run adjacent to the CPE, plus half a cell when the CPE itself stands inside canopy. Foliage loss uses ITU-R P.833 (A = A<sub>m</sub>(1−e<sup>−dγ/A<sub>m</sub></sup>), A<sub>m</sub> = 1.37 f<sub>MHz</sub><sup>0.42</sup>, γ scaled from P.833 Table 1 as 0.34(f/2117)<sup>0.8</sup> dB/m). Developed classes add an ITU-R P.2108 low-angle median term (23.5 + 9.6 log f<sub>GHz</sub>) scaled by intensity (0.5/0.8/1.0/1.2) and by the CPE's height below the roof line. Indoor gateways add 3GPP TR 38.901 §7.4.3 penetration. Leaf-off multiplies deciduous (0.7), mixed (0.8), swamp forest (0.85) and shrub (0.9).</p>
+      <p>Link budget: SINR = EIRP + G<sub>rx</sub> − L − penalty − (−174 + 10 log B + NF) − fade − interference margin. Spectral efficiency 0.8·log<sub>2</sub>(1+SINR) capped at the technology's peak, zero below −5 dB; rank 1/2/4 layers at <12 / <20 / ≥20 dB capped by the CPE; uplink picks the sub-band split (1 to 1/16 of the carrier) that maximises rate. Fixed-beam CPEs lose a user-set 4 dB of effective gain in NLOS (angular spread); indoor gateways 1 dB; adaptive arrays 0 dB.</p>
+    </div>
+    <div class="card"><h3>Technology parameter sheet (defaults)</h3><div class="tblwrap" style="border:0"><table id="paramTbl"></table></div><div class="cap">All editable on the link-budget tab; the maps and calculators use the edited values.</div></div>
+  </div>
+  <div class="secthead"><span class="eyebrow">Limits</span><h2>What the model does not do</h2></div>
+  <div class="cols">
+    <div class="card"><p>It is a median model. Location variability (σ ≈ 8 dB in forest per P.833) is folded into a single fade margin instead of being carried as a distribution, so edges are sharper than reality. It has no building footprints; clutter at the CPE is inferred from the 30 m land-cover class, which under-represents the clearing around a rural house and over-represents trees on a developed parcel. Foliage constants are extrapolated from 0.1–2.1 GHz measurements with one 3.6 GHz anchor and none at 6 GHz; a Lowcountry drive test is the single most valuable calibration (item 14 on the previous tab). Multipath exploitation by adaptive arrays is represented only as the absence of the fixed-panel NLOS penalty. Capacity, scheduling and interference between the three sites are handled on the economics tab, not in the map.</p></div>
+    <div class="card"><p>The mmWave case is deliberately generous (tower-top mounting) and still fails; a pole-mounted small-cell grid would need its own study. The MNO case assumes the macro site carries a C-band or n41 FWA sector pointed at the county, which is true for the Georgetown site and plausible for the other two; it does not model the fallow-capacity gate that decides whether an address is actually offered service. Starlink is not mapped because its coverage is not a propagation question. Finally, Georgetown County itself is close to fully served by fiber and cable after the HTC and Spectrum builds (rural unserved households fell from 27% to under 3%); the county is used as a physics test bed, and the results transfer to any pine-belt county, not as a business case for this county.</p></div>
+  </div>
+  <div class="secthead"><span class="eyebrow">Glossary</span><h2>Terms</h2></div>
+  <div class="gloss" id="gloss"></div>
+  <div class="secthead"><span class="eyebrow">Sources</span><h2>Sources</h2></div>
+  <div class="src" id="sources"></div>
+</section>
+
+<div class="footer"><span>Tarana vs 5G fixed wireless · built October 2026</span><span>Model: ITM v1.2.2 + NLCD clutter · USGS 3DEP · FCC ASR · Census 2020</span><span id="ver2"></span></div>
+</main>
+<div class="tip" id="tip"></div>
