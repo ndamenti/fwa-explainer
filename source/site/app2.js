@@ -2,7 +2,7 @@
 var S = {
   tech: FWA.clone(FWA.TECH), opts: FWA.OPTS,
   lb: { tech: 'tarana_cbrs', cls: 21, depth: 0, ht: 60 },
-  cl: { dist: 5000, metric: 'dl' },
+  cl: { dist: 5000, metric: 'both' },
   map: { site: 'all', tech: 'tarana_cbrs', metric: 'dl', cpe: 'h6', base: 'nlcd' },
   ec: { mode: 'model' }
 };
@@ -46,18 +46,18 @@ function buildYard() {
     { label: 'T-Mobile Home Internet', sub: 'Ookla Q2 2026', segs: [{ v: 222.7, color: sc(1), name: 'Download' }, { v: 18.1, color: 'var(--line2)', name: 'Upload' }] },
     { label: 'AT&T Internet Air', sub: 'Ookla Q2 2026', segs: [{ v: 161.3, color: sc(1), name: 'Download' }, { v: 10.1, color: 'var(--line2)', name: 'Upload' }] },
     { label: 'Verizon 5G Home', sub: 'Ookla Q2 2026', segs: [{ v: 126.4, color: sc(1), name: 'Download' }, { v: 12.2, color: 'var(--line2)', name: 'Upload' }] },
-    { label: 'Starlink Residential', sub: 'Ookla Q1 2026', segs: [{ v: 128, color: sc(7), name: 'Download' }, { v: 20, color: 'var(--line2)', name: 'Upload (≈)' }] },
+    { label: 'Starlink Residential', sub: 'Ookla Q1 2026', segs: [{ v: 128, color: sc(0), name: 'Download' }, { v: 20, color: 'var(--line2)', name: 'Upload (≈)' }] },
     { label: 'Tarana CBRS link rate', sub: 'Preseem fleet median', segs: [{ v: 434, color: sc(2), name: 'Download link rate' }, { v: 0, color: 'var(--line2)', name: 'Upload', text: 'n/p' }] },
     { label: 'Tarana 6 GHz ×4 link rate', sub: 'Preseem fleet median', segs: [{ v: 774, color: sc(2), name: 'Download link rate' }, { v: 0, color: 'var(--line2)', name: 'Upload', text: 'n/p' }] }
-  ], legend: [{ color: sc(1), name: 'MNO FWA download' }, { color: sc(7), name: 'Starlink download' }, { color: sc(2), name: 'Tarana achievable link rate' }, { color: 'var(--line2)', name: 'Upload' }] });
+  ], legend: [{ color: sc(1), name: 'MNO FWA download' }, { color: sc(0), name: 'Starlink download' }, { color: sc(2), name: 'Tarana achievable link rate' }, { color: 'var(--line2)', name: 'Upload' }] });
   hbars($('#chartYard2'), { title: 'Monthly list price, entry → top residential tier ($)', labelW: 200, rowH: 16, tickFmt: function (v) { return '$' + v; }, valFmt: function (v) { return '$' + v; }, rows: [
     { label: 'T-Mobile', segs: [{ v: 50, color: sc(1), name: 'Entry (Rely)' }, { v: 70, color: 'var(--line2)', name: 'Top (All-In)' }] },
     { label: 'Verizon', segs: [{ v: 60, color: sc(1), name: 'Entry (5G Home)' }, { v: 80, color: 'var(--line2)', name: 'Top (5G Home Plus)' }] },
     { label: 'AT&T Internet Air', segs: [{ v: 35, color: sc(1), name: 'Bundled' }, { v: 60, color: 'var(--line2)', name: 'Standalone' }] },
     { label: 'WISP rate cards', segs: [{ v: 30, color: sc(3), name: 'Lowest entry (Nextlink, Rise)' }, { v: 140, color: 'var(--line2)', name: 'Highest tier (Wisper)' }] },
-    { label: 'Starlink', segs: [{ v: 55, color: sc(7), name: 'Residential 100 Mbps' }, { v: 130, color: 'var(--line2)', name: 'Residential Max' }] },
+    { label: 'Starlink', segs: [{ v: 55, color: sc(0), name: 'Residential 100 Mbps' }, { v: 130, color: 'var(--line2)', name: 'Residential Max' }] },
     { label: 'HTC fiber (Georgetown Co.)', segs: [{ v: 49.95, color: 'var(--ink2)', name: 'Entry' }, { v: 0, color: 'var(--line2)', name: 'Top', text: '' }] }
-  ], legend: [{ color: sc(1), name: 'MNO entry' }, { color: sc(3), name: 'WISP entry' }, { color: sc(7), name: 'Starlink entry' }, { color: 'var(--line2)', name: 'Top tier' }] });
+  ], legend: [{ color: sc(1), name: 'MNO entry' }, { color: sc(3), name: 'WISP entry' }, { color: sc(0), name: 'Starlink entry' }, { color: 'var(--line2)', name: 'Top tier' }] });
 }
 function buildMissing() { var m = $('#missingCards'); MISSING.forEach(function (x) { m.appendChild(h('div', { 'class': 'card' }, '<h3>' + x[0] + '</h3><p>' + x[1] + '</p>')); }); }
 function buildGloss() { var g = $('#gloss'); GLOSS.forEach(function (x) { g.appendChild(h('div', {}, '<b>' + x[0] + '</b> — ' + x[1])); }); var s = $('#sources'); SOURCES.forEach(function (x, i) { var parts = x.split(' — '); s.appendChild(h('div', {}, '<span class="n">' + (i + 1) + '.</span> ' + parts[0] + ' — ' + parts[1].split(' ; ').map(function (u) { return '<a href="' + u.trim() + '" target="_blank" rel="noopener">' + u.trim() + '</a>'; }).join(' ; '))); }); }
@@ -85,7 +85,7 @@ function buildSpectrum() {
     ['3.45 GHz', 3.45, 3.55, 1, 'AT&T 40–70 MHz; 1,640 W/MHz', 'Licensed (Dish holdings sold to AT&T)'],
     ['CBRS 3.55–3.70 (n48)', 3.55, 3.70, 3, 'Shared; Cat B 47 dBm/10 MHz', 'Tarana BN-3 / G2 and WISP 5G NR both live here; PAL + GAA under a SAS'],
     ['C-band 3.7–3.98 (n77)', 3.70, 3.98, 1, 'Verizon 161, AT&T 120 MHz; 1,640 W/MHz', 'Licensed; the main MNO FWA band'],
-    ['5 GHz UNII-1/3', 5.15, 5.85, 2, 'Unlicensed; 36 dBm EIRP, shared with Wi-Fi', 'Tarana BN-5, Cambium ePMP, Ubiquiti LTU'],
+    ['5 GHz UNII-1/3', 5.15, 5.85, 7, 'Unlicensed; 36 dBm EIRP, shared with Wi-Fi', 'Tarana BN-5, Cambium ePMP, Ubiquiti LTU'],
     ['6 GHz UNII-5/7', 5.925, 6.875, 6, 'Unlicensed; 36 dBm via AFC', 'Tarana BN-6 / G2 (4×40 MHz), ePMP 4600'],
     ['24 / 28 GHz (n261)', 24.25, 29.5, 4, '400–800 MHz carriers; 75 dBm/100 MHz', 'Licensed mmWave; Verizon 5G Home 2018'],
     ['39 GHz (n260)', 37, 40, 4, 'Same rules; rain and foliage limited', 'Licensed mmWave'],
@@ -94,7 +94,7 @@ function buildSpectrum() {
   var rh = 26;
   rows.forEach(function (r, i) { var y = top + 6 + i * rh; var xa = x(r[1]), xb = Math.max(x(r[2]), xa + 5); var rect = el('rect', { x: xa, y: y, width: xb - xa, height: rh - 10, fill: sc(r[3]), rx: 2 }, g); bindTip(rect, function () { return '<b>' + r[0] + '</b><br>' + r[1] + '–' + r[2] + ' GHz<br>' + r[4] + '<br>' + r[5]; }); el('text', { x: ml - 8, y: y + rh / 2 - 1, 'text-anchor': 'end', 'class': 'lbl', text: r[0] }, g); el('text', { x: nx, y: y + rh / 2 - 1, 'font-size': 11.5, text: r[4] }, g); });
   var c = $('#chartSpectrum'); c.innerHTML = ''; c.appendChild(svg);
-  c.appendChild(legend([{ color: sc(1), name: 'MNO macro FWA, licensed' }, { color: sc(5), name: 'MNO 2.5 GHz (T-Mobile)' }, { color: sc(3), name: 'CBRS, shared: Tarana and 5G NR' }, { color: sc(2), name: 'Unlicensed 5 GHz' }, { color: sc(6), name: '6 GHz under AFC (Tarana, ePMP 4600)' }, { color: sc(4), name: 'mmWave and V-band' }]));
+  c.appendChild(legend([{ color: sc(1), name: 'MNO macro FWA, licensed' }, { color: sc(5), name: 'MNO 2.5 GHz (T-Mobile)' }, { color: sc(3), name: 'CBRS, shared: Tarana and 5G NR' }, { color: sc(7), name: 'Unlicensed 5 GHz (Tarana BN-5, ePMP, LTU)' }, { color: sc(6), name: '6 GHz under AFC (Tarana, ePMP 4600)' }, { color: sc(4), name: 'mmWave and V-band' }]));
 }
 
 /* ===== architecture diagrams ===== */
@@ -211,14 +211,16 @@ function renderLb() {
 function initClutter() {
   seg($('#clDist'), [{ v: 2000, l: '2 km' }, { v: 5000, l: '5 km' }, { v: 10000, l: '10 km' }, { v: 15000, l: '15 km' }], S.cl.dist, function (v) { S.cl.dist = v; renderClutter(); });
   seg($('#clSeason'), [{ v: 'leafon', l: 'Leaf-on' }, { v: 'leafoff', l: 'Leaf-off' }], S.opts.season, function (v) { S.opts.season = v; renderClutter(); invalidateMap(); syncSeasonUI(); });
-  seg($('#clMetric'), [{ v: 'dl', l: 'Downlink Mbps' }, { v: 'ul', l: 'Uplink Mbps' }], S.cl.metric, function (v) { S.cl.metric = v; renderClutter(); });
+  seg($('#clMetric'), [{ v: 'both', l: 'Downlink, dimmed if the uplink fails 20 Mbps' }, { v: 'dl', l: 'Downlink only' }, { v: 'ul', l: 'Uplink only' }], S.cl.metric, function (v) { S.cl.metric = v; renderClutter(); });
   bindRange('clScale', 'clScaleO', function (v) { return Math.round(v * 100) + '%'; }, function (v) { S.opts.clutterScale = v; $('#mpScale').value = v; $('#mpScaleO').textContent = Math.round(v * 100) + '%'; renderClutter(); invalidateMap(); });
   renderClutter(); buildClutterTable();
 }
 function syncSeasonUI() { $$('#clSeason button, #mpSeason button').forEach(function (b) { b.setAttribute('aria-pressed', String((b.textContent.indexOf('Leaf-on') >= 0 ? 'leafon' : 'leafoff') === S.opts.season)); }); }
 function renderClutter() {
-  var rows = CLASS_ORDER.map(function (c) { return { label: FWA.NLCD[c].n.replace(' (swamp forest)', '').replace('Emergent herbaceous wetlands (marsh)', 'Marsh'), sub: CLASS_DEPTH[c] ? CLASS_DEPTH[c] + ' m foliage' : '', segs: FWA.ORDER.map(function (id) { var t = T(id); var r = FWA.evalLink(t, FWA.analyticEnv(t, S.cl.dist, c, CLASS_DEPTH[c], 60), S.opts); var v = S.cl.metric === 'dl' ? r.dl : r.ul; return { v: v, color: techColor(id), name: t.short, text: v >= 1 ? fmtN(v) : '—' }; }) }; });
-  hbars($('#chartClutter'), { title: (S.cl.metric === 'dl' ? 'Downlink' : 'Uplink') + ' Mbps at ' + (S.cl.dist / 1000) + ' km, tower antenna 60 m, ' + (S.opts.season === 'leafon' ? 'leaf-on' : 'leaf-off'), labelW: 190, rowH: 13, gap: 0, rows: rows, max: S.cl.metric === 'dl' ? 1700 : 420, legend: FWA.ORDER.map(function (id) { return { color: techColor(id), name: FWA.TECH[id].short }; }), xlabel: 'Mbps' });
+  var m = S.cl.metric;
+  var rows = CLASS_ORDER.map(function (c) { return { label: FWA.NLCD[c].n.replace(' (swamp forest)', '').replace('Emergent herbaceous wetlands (marsh)', 'Marsh'), sub: CLASS_DEPTH[c] ? CLASS_DEPTH[c] + ' m foliage' : '', segs: FWA.ORDER.map(function (id) { var t = T(id); var r = FWA.evalLink(t, FWA.analyticEnv(t, S.cl.dist, c, CLASS_DEPTH[c], 60), S.opts); var v = m === 'ul' ? r.ul : r.dl; var pass = r.dl >= 100 && r.ul >= 20; var col = techColor(id); if (m === 'both' && !pass) col = 'color-mix(in srgb, ' + col + ' 30%, transparent)'; var txt = m === 'both' ? (v >= 1 ? 'DL ' + fmtN(r.dl) + ' · UL ' + fmtN(r.ul) + (pass ? '' : ' · fails 100/20') : 'no link') : (v >= 1 ? fmtN(v) : '—'); return { v: v, color: col, name: t.short, text: txt }; }) }; });
+  var title = (m === 'ul' ? 'Uplink Mbps' : 'Downlink Mbps') + ' at ' + (S.cl.dist / 1000) + ' km, tower antenna 60 m, ' + (S.opts.season === 'leafon' ? 'leaf-on' : 'leaf-off') + (m === 'both' ? ' · solid bar = passes 100/20, faint bar = fails the uplink or downlink test' : '');
+  hbars($('#chartClutter'), { title: title, labelW: 190, rowH: 13, gap: 0, rows: rows, max: m === 'ul' ? 420 : 1700, legend: FWA.ORDER.map(function (id) { return { color: techColor(id), name: FWA.TECH[id].short }; }), xlabel: 'Mbps' });
 }
 function buildClutterTable() {
   var bands = [2600, 3600, 6400, 28000];

@@ -8,7 +8,7 @@ function fmtN(v, d) { if (v == null || !isFinite(v)) return '—'; return Number
 function fmtK(v) { return v >= 1000 ? (v / 1000).toFixed(v >= 10000 ? 0 : 1) + 'k' : fmtN(v); }
 function fmtMoney(v, d) { return '$' + fmtN(v, d); }
 function tag(t) { return '<span class="tag ' + t + '">' + t.toUpperCase() + '</span>'; }
-var SERIES = ['', 'var(--s1)', 'var(--s2)', 'var(--s3)', 'var(--s4)', 'var(--s5)', 'var(--s6)', 'var(--s7)'];
+var SERIES = ['var(--ink2)', 'var(--s1)', 'var(--s2)', 'var(--s3)', 'var(--s4)', 'var(--s5)', 'var(--s6)', 'var(--s7)'];
 function sc(i) { return SERIES[i]; }
 var TIP = null;
 function tipShow(ev, html) { TIP = TIP || $('#tip'); TIP.innerHTML = html; TIP.style.display = 'block'; tipMove(ev); }
@@ -101,14 +101,14 @@ var MATRIX = [
   ['BEAD "reliable broadband"', 'Licensed (BDC code 71): yes ' + tag('c'), 'Licensed-by-rule GAA (code 72): yes per NTIA Nov 2023 ' + tag('c'), 'Yes ' + tag('c'), 'CBRS yes; unlicensed 5/6 GHz (code 70) no, except where nothing reliable is under the high-cost threshold ' + tag('c'), 'Same ' + tag('c'), 'LEO eligible under June 2025 tech-neutral rules; won 21.9% of locations nationally ' + tag('m')],
   ['Scale (2026)', '≈17–18 M US subscribers; T-Mobile ≈9.4 M, Verizon 6.2 M, AT&T 2.0 M ' + tag('m') + tag('d'), '430,000+ CBSDs across all uses; WISP share not published ' + tag('c'), 'Verizon mmWave-served FWA share not disclosed; Starry ≈100k subs acquired ' + tag('c'), '300+ operators, 24 countries, 20 M homes covered, "hundreds of thousands" of subs ' + tag('c'), '350+ live G2 sectors at Nextlink alone ' + tag('c'), '12 M global, 2.7 M US (85% rural) ' + tag('m') + tag('c')]
 ];
-var MATRIX_COLS = [['MNO macro FWA', 1], ['CBRS 5G NR (WISP)', 3], ['mmWave 5G FWA', 4], ['Tarana G1', 2], ['Tarana G2', 2], ['Starlink Residential', 7]];
+var MATRIX_COLS = [['MNO macro FWA', 1], ['CBRS 5G NR (WISP)', 3], ['mmWave 5G FWA', 4], ['Tarana G1', 2], ['Tarana G2', 2], ['Starlink Residential', 0]];
 
 var SW = [
   { name: 'MNO macro FWA', color: 1, s: 'Lowest price per customer, zero truck roll, national brand, exclusive licensed spectrum and an existing tower grid. Rides capex that mobile already paid for.', w: 'Coverage is a by-product of the mobile grid; service is offered only where fallow capacity exists and withdrawn when it fills (July 2026 availability drop). Indoor gateways spend 15–30 dB on walls and height before the trees start. Deprioritised behind mobile at congestion; uplinks of 10–18 Mbps median.' },
   { name: 'Dedicated CBRS 5G NR', color: 3, s: 'Multi-vendor 3GPP radios and $250–400 CPEs; "reliable broadband" status for BEAD; outdoor pro-installed panels recover most of what MNO gateways lose; 40% of Tarana\'s sector cost.', w: 'One 40–60 MHz carrier per sector in practice; GAA noise rise grows with 430k+ CBSDs and Google\'s SAS exit concentrates the market; fixed panels lose gain in multipath; Cat B radios need CPI registration; the 3GPP small-cell vendor base for WISPs is thin (cnRanger gone, Baicells is Chinese-origin, Ericsson/Nokia priced for carriers).' },
   { name: 'mmWave 5G FWA', color: 4, s: 'Enormous channels (400–800 MHz), multi-gigabit peaks, exclusive spectrum, tiny latency. Right answer for dense MDUs and rooftops with clear sight lines.', w: 'Line-of-sight only: a single tree is 10–30 dB, low-E glass 28 dB, rain 4.6 dB/km. Effective radius ≈200 m from poles; nothing in a forested county. Verizon redirected it to MDUs after six years.' },
   { name: 'Tarana G1 / G2', color: 2, s: 'Best link budget in the category: arrays at both ends, carrier aggregation across CBRS and 6 GHz, interference cancellation, universal frequency reuse, 25.6 Gbps per G2 site. Field medians of 434–774 Mbps across tens of thousands of RNs. Operators report 40% fewer towers.', w: 'Single private vendor with a hosted controller; BN at $21–39k and RN at $840–1,460 are 3–5× 3GPP prices; 6 GHz capacity depends on AFC and is not "reliable" for BEAD; CBRS coverage depends on the same GAA rules as everyone; ~10% of plans sold on RNs exceed the link\'s capability (Preseem).' },
-  { name: 'Starlink', color: 7, s: 'No towers, backhaul or spectrum fights; $1,383 per BEAD location; 128 Mbps median download; 12 M subscribers; instant availability anywhere with sky view.', w: 'Per-cell capacity rationed by $100–1,500 surcharges; uploads 10–25 Mbps; 25–60 ms latency; dish needs a clear sky arc that pine canopy often blocks; price $55–130 before the kit.' }
+  { name: 'Starlink', color: 0, s: 'No towers, backhaul or spectrum fights; $1,383 per BEAD location; 128 Mbps median download; 12 M subscribers; instant availability anywhere with sky view.', w: 'Per-cell capacity rationed by $100–1,500 surcharges; uploads 10–25 Mbps; 25–60 ms latency; dish needs a clear sky arc that pine canopy often blocks; price $55–130 before the kit.' }
 ];
 
 var OTHERS = [

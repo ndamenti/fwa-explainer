@@ -201,6 +201,7 @@ var KEY = {
   mmwave: ['mmWave 5G FWA, 28 GHz', 'Verizon 5G Home-style millimetre wave (band n261), 400 MHz channel. Modelled from the same tower top, its best case.', 'Window-mounted phased-array receiver, 2 m up.'],
   cbrs_nr: ['Dedicated 5G NR in CBRS', 'A WISP-grade standard 3GPP 5G radio on a leased tower, 40 MHz shared (GAA) channel at 3.6 GHz, Category B power (47 dBm/10 MHz), 4T4R with a 17 dBi sector antenna.', 'Outdoor 17 dBi panel at the eave, 6 m up, professionally installed.'],
   tarana_cbrs: ['Tarana on CBRS', 'Tarana G1 or G2 Base Node (BN) using two 40 MHz CBRS carriers at 3.6 GHz; 16-chain distributed massive MIMO, 48.5 dBm per carrier (FCC grant). G1 BN-3 and G2 behave the same for coverage; G2 adds capacity.', 'Tarana Remote Node (RN), an 8-chain outdoor array, at the eave, 6 m up, professionally installed.'],
+  tarana_5: ['Tarana on 5 GHz unlicensed', 'Tarana G1 BN-5 using two 40 MHz carriers in the 5 GHz UNII-1/3 bands (5.15–5.25 and 5.725–5.85 GHz). Unlicensed point-to-multipoint is capped at 36 dBm EIRP for the whole radio, so 33 dBm per carrier, and the band is shared with Wi-Fi. This is where most of the G1 installed base runs; G2 covers 5.7–5.9 GHz too. Licensed 3.3–3.8 GHz variants exist outside the US.', 'Tarana Remote Node (RN-5) at the eave, 6 m up.'],
   tarana_6: ['Tarana on 6 GHz', 'Same Tarana BN family (G1 BN-6 in "x2" mode, or G2) using four 40 MHz carriers in the 6 GHz unlicensed band under AFC: four times the spectrum, but the whole radio is capped at 36 dBm EIRP (30 dBm per carrier).', 'Tarana Remote Node (RN-6 or RNm) at the eave, 6 m up.']
 };
 function buildKeyTable() {
@@ -239,6 +240,7 @@ var ECON = {
   cbrs_nr: { sectors: 4, radio: 9000, cap: 0.2, cpe: 350, install: 250, label: 'CBRS 5G NR, 4 sectors' },
   tarana_cbrs: { sectors: 4, radio: 24470, cap: 1.92, cpe: 1290, install: 250, label: 'Tarana G1 BN-3, 4 BNs' },
   tarana_g2: { sectors: 4, radio: 38640, cap: 5.12, cpe: 1460, install: 250, label: 'Tarana G2, 4 BNs (RNm)', color: 2 },
+  tarana_5: { sectors: 4, radio: 21400, cap: 1.92, cpe: 1130, install: 250, label: 'Tarana G1 BN-5 (5 GHz), 4 BNs' },
   tarana_6: { sectors: 4, radio: 21410, cap: 2.56, cpe: 1180, install: 250, label: 'Tarana G1 BN-6 ×2 mode, 4 BNs' }
 };
 var EC = { pass: 2000, take: 25, arpu: 65, bh: 5.2, lease: 800, bh2: 2000, site: 25000, opex: 16, churn: 15 };
@@ -257,7 +259,7 @@ function initEcon() {
 }
 function renderEcon() {
   var pass = EC.pass; if (S.ec.mode === 'model' && HERO.stats && HERO.stats.tarana_cbrs) { pass = Math.round(HERO.stats.tarana_cbrs.hu1020 / 3 / 100) * 100; $('#ecPass').value = pass; $('#ecPassO').textContent = fmtN(pass); }
-  var ids = ['mno_cband', 'cbrs_nr', 'tarana_cbrs', 'tarana_g2', 'tarana_6', 'mmwave'];
+  var ids = ['mno_cband', 'cbrs_nr', 'tarana_cbrs', 'tarana_g2', 'tarana_5', 'tarana_6', 'mmwave'];
   var rows = [], html = '<thead><tr><th>Site build</th><th class="num">Site capex</th><th class="num">Capex / passing</th><th class="num">Subs at take</th><th class="num">Busy-hour capacity (subs)</th><th class="num">Capex / sub</th><th class="num">Contribution / sub / mo</th><th class="num">Payback</th></tr></thead><tbody>';
   ids.forEach(function (id) {
     var e = ECON[id], base = id === 'tarana_g2' ? 'tarana_cbrs' : id;
@@ -276,7 +278,7 @@ function renderEcon() {
   html += '<tr><td>Starlink (operator view: no site; consumer kit)</td><td class="num">—</td><td class="num">$1,383 BEAD avg / loc</td><td class="num">—</td><td class="num">per-cell</td><td class="num">$349 kit</td><td class="num">—</td><td class="num">—</td></tr>';
   html += '<tr><td>Fiber, aerial, 10 locations/mile, 45% take (FBA 2025 medians + $700 drop)</td><td class="num">—</td><td class="num">$4,224</td><td class="num">' + fmtN(pass * 0.45) + '</td><td class="num">unconstrained</td><td class="num">' + fmtMoney(4224 / 0.45 + 700) + '</td><td class="num">—</td><td class="num">—</td></tr>';
   $('#econTbl').innerHTML = html + '</tbody>';
-  hbars($('#chartCapex'), { title: 'Capital cost per subscriber at ' + EC.take + '% take, ' + fmtN(pass) + ' passings per site', labelW: 230, rowH: 16, tickFmt: function (v) { return '$' + fmtK(v); }, valFmt: function (v) { return fmtMoney(v); }, rows: rows.map(function (r) { return { label: r.label, segs: [{ v: r.capexSub, color: r.color, name: 'Capex per subscriber' }] }; }).concat([{ label: 'Fiber aerial (per sub at 45% take + $700 drop)', segs: [{ v: 4224 / 0.45 + 700, color: 'var(--ink2)', name: 'Fiber' }] }, { label: 'Starlink BEAD subsidy per location', segs: [{ v: 1383, color: sc(7), name: 'Starlink' }] }]) });
+  hbars($('#chartCapex'), { title: 'Capital cost per subscriber at ' + EC.take + '% take, ' + fmtN(pass) + ' passings per site', labelW: 230, rowH: 16, tickFmt: function (v) { return '$' + fmtK(v); }, valFmt: function (v) { return fmtMoney(v); }, rows: rows.map(function (r) { return { label: r.label, segs: [{ v: r.capexSub, color: r.color, name: 'Capex per subscriber' }] }; }).concat([{ label: 'Fiber aerial (per sub at 45% take + $700 drop)', segs: [{ v: 4224 / 0.45 + 700, color: 'var(--ink2)', name: 'Fiber' }] }, { label: 'Starlink BEAD subsidy per location', segs: [{ v: 1383, color: sc(0), name: 'Starlink' }] }]) });
   hbars($('#chartCapacity'), { title: 'Subscribers per site: footprint at take rate vs busy-hour capacity (' + EC.bh + ' Mbps/sub)', labelW: 230, rowH: 14, rows: rows.map(function (r) { return { label: r.label, segs: [{ v: r.subs, color: r.color, name: 'Subscribers from footprint' }, { v: r.capSubs, color: 'var(--line2)', name: 'Busy-hour capacity' }] }; }), legend: [{ color: 'var(--ink2)', name: 'Footprint × take rate (series colour)' }, { color: 'var(--line2)', name: 'Busy-hour capacity' }] });
 }
 

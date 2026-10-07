@@ -38,6 +38,12 @@ var FWA = (function () {
       cpe: 'array', cpeGain: 14.5, cpeComb: 9, cpeH: 6, o2i: 'none',
       ulEirp: 36, bsGain: 26.3, nfBs: 5, ulLayers: 2, interf: 1, interfUl: 1, tag: 'tarana',
       note: 'BN-3: 16-chain distributed massive MIMO at 48.5 dBm EIRP per 40 MHz carrier (FCC grant); 8-chain RN, pro-installed, operated as a Cat A CPE-CBSD (30 dBm/10 MHz).' },
+    tarana_5: { id: 'tarana_5', name: 'Tarana G1 BN-5 · 5 GHz unlicensed (2×40 MHz)', short: 'Tarana 5 GHz', color: 7,
+      fMHz: 5800, layerF: 2, carriers: 2, bw: 40, dlFrac: 0.80, ulFrac: 0.20,
+      eirp: 33, nfCpe: 6, maxLayers: 2, seMax: 7.35, capDl: 800, capUl: 200,
+      cpe: 'array', cpeGain: 14.5, cpeComb: 9, cpeH: 6, o2i: 'none',
+      ulEirp: 36, bsGain: 26.5, nfBs: 5, ulLayers: 2, interf: 4, interfUl: 4, tag: 'tarana',
+      note: 'Unlicensed UNII-1/3: 36 dBm EIRP total for point-to-multipoint, so 33 dBm per carrier with two carriers; shared with Wi-Fi, hence the larger interference margin. The largest part of the G1 installed base.' },
     tarana_6: { id: 'tarana_6', name: 'Tarana G1x2/G2 · 6 GHz (4×40 MHz)', short: 'Tarana 6 GHz', color: 6,
       fMHz: 6400, layerF: 2, carriers: 4, bw: 40, dlFrac: 0.80, ulFrac: 0.20,
       eirp: 30, nfCpe: 6, maxLayers: 2, seMax: 7.35, capDl: 1600, capUl: 400,
@@ -45,7 +51,7 @@ var FWA = (function () {
       ulEirp: 24, bsGain: 28, nfBs: 5, ulLayers: 2, interf: 0.5, interfUl: 0.5, tag: 'tarana',
       note: 'Standard-power 6 GHz under AFC: 36 dBm EIRP shared across four 40 MHz carriers (30 dBm each). Four times the spectrum at a fraction of the power.' }
   };
-  var ORDER = ['mno_cband', 'mno_n41', 'mmwave', 'cbrs_nr', 'tarana_cbrs', 'tarana_6'];
+  var ORDER = ['mno_cband', 'mno_n41', 'mmwave', 'cbrs_nr', 'tarana_cbrs', 'tarana_5', 'tarana_6'];
 
   // ---------- Global modelling options (user-adjustable) ----------
   var OPTS = {
