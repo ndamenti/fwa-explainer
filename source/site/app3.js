@@ -1,16 +1,51 @@
 /* ===== geodata + maps ===== */
-var GEO = null, L = { sites: [] }, GRID = null;
+var GEOALL = null, GEO = null, L = null, LCACHE = {}, HEROCACHE = {};
+var TBMETA = {
+  sc: { tag: 'Coastal plain · flat (highest point 39 m) · pine and swamp forest · the trees decide',
+    thesis: 'In the Lowcountry the trees decide, not the towers. Every sub-7 GHz radio sees near free-space loss to 25 km over this ground. What separates the technologies is how many decibels each can spend on pine canopy, swamp forest and house walls at the customer\'s end, and whether the uplink survives the trip back.',
+    card1: '<h3>What the model says</h3><p>Tarana\'s edge is real and it is mostly antenna physics. Sixteen radio chains at the base node and eight at the remote node buy roughly 9 dB of uplink and 3–4 dB of downlink over a WISP-grade 5G NR sector with a 17 dBi outdoor CPE, and the two to four 40 MHz carriers buy capacity on top. In this clutter that translates into about {ratio} more county homes at 100/20 from the same towers ({tarana_cbrs} vs {cbrs_nr}).</p><p>The larger lever is where the CPE sits. Moving an MNO C-band gateway from a window sill to a 17 dBi roof panel at 6 m takes it from {mno_cband} to {mno_out} homes; raising Tarana\'s Remote Node from a 6 m eave to a 10 m pole adds another {d10} homes. No operator gets around the pine canopy; they only choose how much of the link budget to spend on it.</p>',
+    card2: '<h3>What it means commercially</h3><p>MNO macro FWA is a capacity product sold address by address into fallow mobile capacity. It wins on price and zero truck rolls, and it is already shrinking in cities where sectors fill up. Dedicated CBRS 5G NR reaches about two-thirds of Tarana\'s footprint for roughly 40% of the sector hardware cost, but with half the spectrum per sector and a 3GPP vendor base that just lost Cambium\'s cnRanger and never gained a strong CBRS small-cell champion.</p><p>Tarana is the performance leader and a single-vendor bet: a 4-BN G2 site is about $155k of radios, the RN costs 3–5× a 3GPP CPE, and the company is private, flat on its last three rounds, and dependent on CBRS and 6 GHz rules it does not control. mmWave FWA covers nothing here beyond the first few hundred metres of open ground. And the county is already close to fully served by HTC and Spectrum fiber and cable, so the physics transfer to any pine-belt county; the business case does not.</p>',
+    why: { GT: 'Town, Winyah Bay, salt marsh and the Waccamaw Neck across the water: open paths over water, dense trees on land.', PV: 'Mid-county pine plantation and Pee Dee swamp forest along US 701; the tallest structure, mounted at 90 m.', HW: 'The county\'s farm-and-small-town corner: the most cropland of any site, otherwise swamp forest.' },
+    keep: ['Hemingway', 'Andrews', 'Pawleys Island'], minArea: 2, homesNote: 'Of {hu} housing units in the county (2020 Census blocks), {inr} lie within 25 km of at least one of the three sites.' },
+  ma: { tag: 'Glacial uplands · hills of 100–600 m · deciduous forest and dense suburbs · the terrain decides',
+    thesis: 'Worcester County is the opposite case. Elevation swings by 200–400 m inside a single 25 km cell, so Longley-Rice reports a median 30 dB of terrain loss beyond free space from the hilltop at Paxton and more than 50 dB from the two lower sites: whole valleys sit in radio shadow whatever radio is on the tower. The forest is deciduous, so leaf-off matters, and the homes are denser and nearer the roads. Here the hilltop is worth more than the vendor, and the uplink still decides who counts as served.',
+    card1: '<h3>What the model says</h3><p>Terrain shadow dominates. From the same three towers Tarana on CBRS reaches {tarana_cbrs} of the {hu} homes in the modelled part of the county at 100/20, dedicated 5G NR in CBRS {cbrs_nr}, Tarana on 6 GHz {tarana_6}, and the MNO indoor gateway {mno_cband}, even though that gateway connects at some speed to far more homes than any WISP radio. The 407 m hilltop at Paxton does most of the work for every configuration; the two valley-side sites mostly serve their own slopes.</p><p>Height at the customer end matters even more than on the coast: a Remote Node on a 10 m pole instead of a 6 m eave adds {d10} homes ({pct10}), because it clears the near canopy on a slope that the tower already sees. Moving the MNO gateway outdoors takes it from {mno_cband} to {mno_out}.</p>',
+    card2: '<h3>What it means commercially</h3><p>Worcester County has near-universal cable and a growing fiber footprint, so fixed wireless here competes for take rate on price and speed, not on being the only option. MNO home internet is the volume product in the suburbs and works because the mobile grid is dense enough to put a sector within a few kilometres of most streets; the fallow-capacity gate, not propagation, decides who is offered it. WISP-grade CBRS and Tarana are hill-town and lake-district plays: a hilltop site at Paxton or Wachusett covers tens of thousands of homes, but broadcast-grade hilltops carry broadcast-grade leases, and a 25 km footprint over 300k homes is capacity-bound long before it is range-bound.</p><p>The same cost structure applies as on the coast: Tarana at 2.5–4× the sector hardware of 3GPP gear and 3–5× the CPE, in exchange for the largest footprint and the only usable uplink on the far slopes. The leaf-off toggle on the map tab is worth trying here; it is the one place where the deciduous canopy gives some of the loss back for half the year.</p>',
+    why: { PX: 'Asnebumskit Hill, 407 m above sea level, overlooking the city of Worcester and its suburbs: the broadcast hilltop every operator wants.', NB: 'Rural west: dairy farms, hill-and-valley deciduous forest, Quabbin-side villages; a valley-side state police tower.', NO: 'Blackstone Valley mill towns and suburbs in the southeast; low ground at 126 m among 200–300 m hills.' },
+    keep: ['Paxton', 'Holden', 'Barre', 'Spencer', 'Charlton', 'Northbridge', 'Uxbridge', 'Ware', 'Rutland'], minArea: 9, homesNote: 'Of {hu} housing units in the part of the county covered by the three 25 km windows (2020 Census blocks; the whole county has about 352k), {inr} lie within 25 km of at least one site.' }
+};
 function loadImage(b64) { return new Promise(function (res, rej) { var im = new Image(); im.onload = function () { var c = document.createElement('canvas'); c.width = im.naturalWidth; c.height = im.naturalHeight; var cx = c.getContext('2d', { willReadFrequently: true }); cx.drawImage(im, 0, 0); res(cx.getImageData(0, 0, c.width, c.height).data); }; im.onerror = rej; im.src = 'data:image/png;base64,' + b64; }); }
-function loadGeo() {
-  GEO = JSON.parse($('#geodata').textContent);
-  var W = GEO.crop.w, H = GEO.crop.h;
-  var jobs = [loadImage(GEO.nlcd), loadImage(GEO.housing)];
-  GEO.sites.forEach(function (s) { jobs.push(loadImage(s.itm[0]), loadImage(s.itm[1]), loadImage(s.itm[2]), loadImage(s.depth), loadImage(s.los)); });
+function loadGeo(id) {
+  if (!GEOALL) GEOALL = JSON.parse($('#geodata').textContent);
+  var g = GEOALL.testbeds.filter(function (t) { return t.id === id; })[0]; GEO = g; S.tb = id;
+  if (LCACHE[id]) { L = LCACHE[id]; return Promise.resolve(); }
+  var W = g.crop.w, H = g.crop.h, LL = { sites: [] };
+  var jobs = [loadImage(g.nlcd), loadImage(g.housing)];
+  g.sites.forEach(function (s) { jobs.push(loadImage(s.itm[0]), loadImage(s.itm[1]), loadImage(s.itm[2]), loadImage(s.depth), loadImage(s.los)); });
   return Promise.all(jobs).then(function (imgs) {
-    var nl = imgs[0], hu = imgs[1]; L.cls = new Uint8Array(W * H); L.units = new Float32Array(W * H); L.county = new Uint8Array(W * H); L.huTotal = 0;
-    for (var i = 0; i < W * H; i++) { L.cls[i] = nl[i * 4]; L.units[i] = (hu[i * 4] * 256 + hu[i * 4 + 1]) / 10; L.county[i] = hu[i * 4 + 2] > 127 ? 1 : 0; if (L.county[i]) L.huTotal += L.units[i]; }
-    GEO.sites.forEach(function (s, k) { var b = 2 + k * 5; L.sites.push({ s: s, itm: [imgs[b], imgs[b + 1], imgs[b + 2]], depth: imgs[b + 3], los: imgs[b + 4] }); });
-    L.W = W; L.H = H; L.dl = new Float32Array(W * H); L.ul = new Float32Array(W * H); L.src = new Int8Array(W * H);
+    var nl = imgs[0], hu = imgs[1]; LL.cls = new Uint8Array(W * H); LL.units = new Float32Array(W * H); LL.county = new Uint8Array(W * H); LL.huTotal = 0;
+    for (var i = 0; i < W * H; i++) { LL.cls[i] = nl[i * 4]; LL.units[i] = (hu[i * 4] * 256 + hu[i * 4 + 1]) / 10; LL.county[i] = hu[i * 4 + 2] > 127 ? 1 : 0; if (LL.county[i]) LL.huTotal += LL.units[i]; }
+    g.sites.forEach(function (s, k) { var b = 2 + k * 5; LL.sites.push({ s: s, itm: [imgs[b], imgs[b + 1], imgs[b + 2]], depth: imgs[b + 3], los: imgs[b + 4] }); });
+    LL.W = W; LL.H = H; LL.dl = new Float32Array(W * H); LL.ul = new Float32Array(W * H); LL.src = new Int8Array(W * H);
+    LCACHE[id] = LL; L = LL;
+  });
+}
+function tbMeta() { return TBMETA[S.tb] || TBMETA.sc; }
+function fillTemplate(str, vals) { return str.replace(/\{(\w+)\}/g, function (m, k) { return vals[k] != null ? vals[k] : m; }); }
+function applyTestbedText() {
+  var m = tbMeta();
+  $$('.tbname').forEach(function (e) { e.textContent = GEO.name; });
+  $$('.tbshort').forEach(function (e) { e.textContent = GEO.short; });
+  $('#tbTag').textContent = m.tag; $('#tbThesis').textContent = m.thesis;
+  $$('#tbPick button').forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.tb === S.tb)); });
+}
+function switchTestbed(id, done) {
+  if (id === S.tb && L) return;
+  $('#heroTiles').innerHTML = '<div class="tile"><div class="l">Decoding terrain layers…</div></div>';
+  loadGeo(id).then(function () {
+    applyTestbedText(); S.map.site = 'all'; renderSiteControls(); buildLandcover(); invalidateMap(); MAPC.best = null; $('#mpCompareCard').hidden = true;
+    computeHero(function () { renderEcon(); if (done) done(); });
+    if ($('#tab-maps').classList.contains('active')) scheduleMap();
   });
 }
 // which CPE variant to apply for the map/compare runs
@@ -119,18 +154,18 @@ function drawOverlay() {
   var g = el('g', {}, svg);
   GEO.county.forEach(function (ring) { el('path', { d: 'M' + ring.map(function (p) { return p[0] + ',' + p[1]; }).join('L') + 'Z', fill: 'none', stroke: 'var(--ink)', 'stroke-width': 1.4, 'stroke-opacity': .8 }, g); });
   GEO.roads.forEach(function (r) { el('path', { d: 'M' + r.pts.map(function (p) { return p[0] + ',' + p[1]; }).join('L'), fill: 'none', stroke: 'var(--ink)', 'stroke-width': r.cls === 'S1100' ? 1.2 : 0.6, 'stroke-opacity': r.cls === 'S1100' ? .55 : .35 }, g); });
-  GEO.places.forEach(function (p) { if (p.area < 2 && ['Hemingway', 'Andrews', 'Pawleys Island'].indexOf(p.name) < 0) return; el('text', { x: p.px, y: p.py, 'font-size': 11, 'text-anchor': 'middle', fill: 'var(--ink)', 'font-family': 'var(--mono)', 'paint-order': 'stroke', stroke: 'var(--surface)', 'stroke-width': 3, 'stroke-opacity': .7, text: p.name }, g); });
+  var m = tbMeta(); GEO.places.forEach(function (p) { if (p.area < m.minArea && m.keep.indexOf(p.name) < 0) return; el('text', { x: p.px, y: p.py, 'font-size': 11, 'text-anchor': 'middle', fill: 'var(--ink)', 'font-family': 'var(--mono)', 'paint-order': 'stroke', stroke: 'var(--surface)', 'stroke-width': 3, 'stroke-opacity': .7, text: p.name }, g); });
   var idx = siteIndices();
   GEO.sites.forEach(function (s, k) { var on = idx.indexOf(k) >= 0; [5000, 10000, 25000].forEach(function (rm) { if (on) el('circle', { cx: s.px, cy: s.py, r: rm / GEO.res, fill: 'none', stroke: 'var(--ink)', 'stroke-width': .7, 'stroke-opacity': rm === 25000 ? .5 : .3, 'stroke-dasharray': rm === 25000 ? '' : '3 3' }, g); }); el('circle', { cx: s.px, cy: s.py, r: 5, fill: on ? 'var(--ink)' : 'var(--muted)', stroke: 'var(--surface)', 'stroke-width': 2 }, g); el('text', { x: s.px + 8, y: s.py - 7, 'font-size': 12, 'font-weight': 700, fill: 'var(--ink)', 'paint-order': 'stroke', stroke: 'var(--surface)', 'stroke-width': 3, 'stroke-opacity': .8, text: s.id + ' · ' + s.ht + ' m' }, g); });
   el('g', { id: 'ovCursor' }, svg);
 }
-function utmToLatLon(x, y) { var k0 = 0.9996, a = 6378137, f = 1 / 298.257223563, e2 = f * (2 - f), ep2 = e2 / (1 - e2), lon0 = -81 * Math.PI / 180; x -= 500000; var M = y / k0, mu = M / (a * (1 - e2 / 4 - 3 * e2 * e2 / 64 - 5 * e2 * e2 * e2 / 256)), e1 = (1 - Math.sqrt(1 - e2)) / (1 + Math.sqrt(1 - e2)); var p1 = mu + (3 * e1 / 2 - 27 * Math.pow(e1, 3) / 32) * Math.sin(2 * mu) + (21 * e1 * e1 / 16 - 55 * Math.pow(e1, 4) / 32) * Math.sin(4 * mu) + 151 * Math.pow(e1, 3) / 96 * Math.sin(6 * mu); var sp = Math.sin(p1), cp = Math.cos(p1), tp = Math.tan(p1); var N1 = a / Math.sqrt(1 - e2 * sp * sp), T1 = tp * tp, C1 = ep2 * cp * cp, R1 = a * (1 - e2) / Math.pow(1 - e2 * sp * sp, 1.5), D = x / (N1 * k0); var lat = p1 - (N1 * tp / R1) * (D * D / 2 - (5 + 3 * T1 + 10 * C1 - 4 * C1 * C1 - 9 * ep2) * Math.pow(D, 4) / 24 + (61 + 90 * T1 + 298 * C1 + 45 * T1 * T1 - 252 * ep2 - 3 * C1 * C1) * Math.pow(D, 6) / 720); var lon = lon0 + (D - (1 + 2 * T1 + C1) * Math.pow(D, 3) / 6 + (5 - 2 * C1 + 28 * T1 - 3 * C1 * C1 + 8 * ep2 + 24 * T1 * T1) * Math.pow(D, 5) / 120) / cp; return [lat * 180 / Math.PI, lon * 180 / Math.PI]; }
+function utmToLatLon(x, y, lon0deg) { var k0 = 0.9996, a = 6378137, f = 1 / 298.257223563, e2 = f * (2 - f), ep2 = e2 / (1 - e2), lon0 = lon0deg * Math.PI / 180; x -= 500000; var M = y / k0, mu = M / (a * (1 - e2 / 4 - 3 * e2 * e2 / 64 - 5 * e2 * e2 * e2 / 256)), e1 = (1 - Math.sqrt(1 - e2)) / (1 + Math.sqrt(1 - e2)); var p1 = mu + (3 * e1 / 2 - 27 * Math.pow(e1, 3) / 32) * Math.sin(2 * mu) + (21 * e1 * e1 / 16 - 55 * Math.pow(e1, 4) / 32) * Math.sin(4 * mu) + 151 * Math.pow(e1, 3) / 96 * Math.sin(6 * mu); var sp = Math.sin(p1), cp = Math.cos(p1), tp = Math.tan(p1); var N1 = a / Math.sqrt(1 - e2 * sp * sp), T1 = tp * tp, C1 = ep2 * cp * cp, R1 = a * (1 - e2) / Math.pow(1 - e2 * sp * sp, 1.5), D = x / (N1 * k0); var lat = p1 - (N1 * tp / R1) * (D * D / 2 - (5 + 3 * T1 + 10 * C1 - 4 * C1 * C1 - 9 * ep2) * Math.pow(D, 4) / 24 + (61 + 90 * T1 + 298 * C1 + 45 * T1 * T1 - 252 * ep2 - 3 * C1 * C1) * Math.pow(D, 6) / 720); var lon = lon0 + (D - (1 + 2 * T1 + C1) * Math.pow(D, 3) / 6 + (5 - 2 * C1 + 28 * T1 - 3 * C1 * C1 + 8 * ep2 + 24 * T1 * T1) * Math.pow(D, 5) / 120) / cp; return [lat * 180 / Math.PI, lon * 180 / Math.PI]; }
 function mapHover(ev) {
   if (!GEO || MAPC.dirty) return;
   var box = $('#mapCanvas').getBoundingClientRect(); var x = Math.floor((ev.clientX - box.left) / box.width * L.W), y = Math.floor((ev.clientY - box.top) / box.height * L.H);
   if (x < 0 || y < 0 || x >= L.W || y >= L.H) return;
   var gi = y * L.W + x, cls = L.cls[gi]; var ox = GEO.crop.c0, oy = GEO.crop.r0;
-  var utmX = 594270 + (x + ox + 0.5) * 90, utmY = 3756420 - (y + oy + 0.5) * 90, ll = utmToLatLon(utmX, utmY);
+  var utmX = GEO.grid.x0 + (x + ox + 0.5) * 90, utmY = GEO.grid.y1 - (y + oy + 0.5) * 90, ll = utmToLatLon(utmX, utmY, GEO.lon0);
   var cur = $('#ovCursor'); cur.innerHTML = ''; el('rect', { x: x - 1, y: y - 1, width: 3, height: 3, fill: 'none', stroke: 'var(--critical)', 'stroke-width': 1.2 }, cur);
   var tech = S.map.metric === 'best' ? (MAPC.best && MAPC.best[gi] >= 0 ? FWA.ORDER[MAPC.best[gi]] : S.map.tech) : S.map.tech;
   var t = techVariant(tech, S.map.metric === 'best' ? defaultCpe(tech) : S.map.cpe), hi = FWA.LAYER_H.indexOf(t.cpeH); if (hi < 0) hi = 1;
@@ -141,8 +176,15 @@ function mapHover(ev) {
   else { var e = best.env; txt += ' via ' + bestSite.id + ' · ' + (e.dist / 1000).toFixed(1) + ' km\n' + (t.layerF < 0 ? 'FSPL+gas+rain ' + (FWA.fspl(e.dist, t.fMHz) + (t.gas || 0) * e.dist / 1000 + (t.rain || 0)).toFixed(1) : 'ITM terrain ' + (e.itm + 20 * Math.log10(t.fMHz / FWA.LAYER_F[t.layerF])).toFixed(1)) + ' dB · foliage ' + e.depth + ' m → ' + FWA.foliageLoss(e.depth, t.fMHz, cls, S.opts).toFixed(1) + ' dB\nbuilding ' + FWA.bldgLoss(cls, t.fMHz, t.cpeH, S.opts).toFixed(1) + ' · O2I ' + FWA.o2iLoss(t.o2i, t.fMHz).toFixed(1) + ' · NLOS pen ' + best.pen + ' · ' + (e.los ? 'clutter LOS' : 'obstructed') + '\ntotal path loss ' + best.L.toFixed(1) + ' dB\nSINR DL ' + best.snrDl.toFixed(1) + ' / UL ' + best.snrUl.toFixed(1) + ' dB\nrate DL ' + fmtN(best.dl) + ' / UL ' + fmtN(best.ul) + ' Mbps'; }
   $('#mpRead').textContent = txt;
 }
-function initMaps() {
+function renderSiteControls() {
   seg($('#mpSite'), [{ v: 'all', l: 'All three' }].concat(GEO.sites.map(function (s) { return { v: s.id, l: s.id + ' · ' + s.name.split(' — ')[0] }; })), S.map.site, function (v) { S.map.site = v; scheduleMap(); });
+  var html = '<thead><tr><th>Site</th><th>FCC ASR</th><th>Owner</th><th class="num">Structure</th><th class="num">Radio centre</th><th class="num">Ground</th><th>Location</th><th>Why this site</th></tr></thead><tbody>';
+  var why = tbMeta().why;
+  GEO.sites.forEach(function (s) { html += '<tr><td><b>' + s.id + '</b> ' + s.name + '</td><td class="mono">' + s.asr + '</td><td>' + s.owner + '</td><td class="num">' + s.tower_m + ' m</td><td class="num">' + s.ht + ' m</td><td class="num">' + s.ground_m + ' m</td><td class="mono">' + s.lat.toFixed(4) + ', ' + s.lon.toFixed(4) + '</td><td>' + (why[s.id] || '') + '</td></tr>'; });
+  $('#siteTbl').innerHTML = html + '</tbody>';
+}
+function initMaps() {
+  renderSiteControls();
   seg($('#mpTech'), FWA.ORDER.map(function (id) { return { v: id, l: FWA.TECH[id].short, color: techColor(id) }; }), S.map.tech, function (v) { S.map.tech = v; S.map.cpe = defaultCpe(v); renderCpeSeg(); scheduleMap(); });
   seg($('#mpMetric'), [{ v: 'dl', l: 'Downlink Mbps' }, { v: 'ul', l: 'Uplink Mbps' }, { v: 'bead', l: '100/20 served' }, { v: 'best', l: 'Best technology' }], S.map.metric, function (v) { S.map.metric = v; $('#mpCpeWrap').hidden = v === 'best'; scheduleMap(); });
   function renderCpeSeg() { seg($('#mpCpe'), cpeOptionsFor(S.map.tech), S.map.cpe, function (v) { S.map.cpe = v; scheduleMap(); }); }
@@ -153,10 +195,6 @@ function initMaps() {
   seg($('#mpBase'), [{ v: 'nlcd', l: 'Land cover' }, { v: 'plain', l: 'Plain' }], S.map.base, function (v) { S.map.base = v; scheduleMap(); });
   var mb = $('#mapbox'); mb.addEventListener('mousemove', mapHover); mb.addEventListener('click', mapHover);
   $('#mpCompare').addEventListener('click', compareAll);
-  var html = '<thead><tr><th>Site</th><th>FCC ASR</th><th>Owner</th><th class="num">Structure</th><th class="num">Radio centre</th><th class="num">Ground</th><th>Location</th><th>Why this site</th></tr></thead><tbody>';
-  var why = { GT: 'Town, Winyah Bay, salt marsh and the Waccamaw Neck across the water: open paths over water, dense trees on land.', PV: 'Mid-county pine plantation and Pee Dee swamp forest along US 701; the tallest structure, mounted at 90 m.', HW: 'The county\'s farm-and-small-town corner: the most cropland of any site, otherwise swamp forest.' };
-  GEO.sites.forEach(function (s) { html += '<tr><td><b>' + s.id + '</b> ' + s.name + '</td><td class="mono">' + s.asr + '</td><td>' + s.owner + '</td><td class="num">' + s.tower_m + ' m</td><td class="num">' + s.ht + ' m</td><td class="num">' + s.ground_m + ' m</td><td class="mono">' + s.lat.toFixed(4) + ', ' + s.lon.toFixed(4) + '</td><td>' + why[s.id] + '</td></tr>'; });
-  $('#siteTbl').innerHTML = html + '</tbody>';
   document.addEventListener('tabshown', function (e) { if (e.detail === 'maps' && MAPC.dirty) scheduleMap(); });
   if (matchMedia) matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function () { invalidateMap(); });
   new MutationObserver(function () { invalidateMap(); }).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
@@ -185,16 +223,19 @@ var HERO = {};
 function computeHero(done) {
   var tiles = $('#heroTiles'); tiles.innerHTML = ''; var dl = new Float32Array(L.W * L.H), ul = new Float32Array(L.W * L.H), src = new Int8Array(L.W * L.H);
   var inRange = 0; for (var i = 0; i < L.W * L.H; i++) if (L.county[i]) { var x = i % L.W, y = (i / L.W) | 0; var ok = GEO.sites.some(function (s) { return Math.hypot((x - s.px) * 90, (y - s.py) * 90) <= 25000; }); if (ok) inRange += L.units[i]; }
-  $('#heroHU').textContent = fmtN(L.huTotal); $('#heroInRange').textContent = fmtN(inRange);
-  var queue = FWA.ORDER.slice(); HERO.stats = {};
+  $('#heroHomes').textContent = fillTemplate(tbMeta().homesNote, { hu: fmtN(L.huTotal), inr: fmtN(inRange) });
+  if (HEROCACHE[S.tb]) { HERO.stats = HEROCACHE[S.tb]; renderHeroTiles(); renderHero(); if (done) done(); return; }
+  var queue = FWA.ORDER.slice(); HERO.stats = {}; HEROCACHE[S.tb] = HERO.stats;
   function step() {
     if (!queue.length) { HERO.stats.mno_out = statsFor(techVariant('mno_cband', 'outdoor'), [0, 1, 2], dl, ul, src); HERO.stats.tarana10 = statsFor(techVariant('tarana_cbrs', 'h10'), [0, 1, 2], dl, ul, src); HERO.stats.nr10 = statsFor(techVariant('cbrs_nr', 'h10'), [0, 1, 2], dl, ul, src); renderHero(); if (done) done(); return; }
     var id = queue.shift(); HERO.stats[id] = statsFor(techVariant(id, defaultCpe(id)), [0, 1, 2], dl, ul, src);
-    tiles.appendChild(h('div', { 'class': 'tile' }, '<div class="k"><i class="swatch" style="background:' + techColor(id) + '"></i>' + FWA.TECH[id].short + '</div><div class="v">' + fmtK(HERO.stats[id].hu1020) + '</div><div class="l">' + (HERO.stats[id].hu1020 / L.huTotal * 100).toFixed(0) + '% of county homes · ' + fmtN(HERO.stats[id].km1020) + ' km²</div>'));
+    tiles.appendChild(heroTile(id));
     setTimeout(step, 10);
   }
   step();
 }
+function heroTile(id) { return h('div', { 'class': 'tile' }, '<div class="k"><i class="swatch" style="background:' + techColor(id) + '"></i>' + FWA.TECH[id].short + '</div><div class="v">' + fmtK(HERO.stats[id].hu1020) + '</div><div class="l">' + (HERO.stats[id].hu1020 / L.huTotal * 100).toFixed(0) + '% of homes · ' + fmtN(HERO.stats[id].km1020) + ' km²</div>'); }
+function renderHeroTiles() { var tiles = $('#heroTiles'); tiles.innerHTML = ''; FWA.ORDER.forEach(function (id) { tiles.appendChild(heroTile(id)); }); }
 var KEY = {
   mno_cband: ['MNO macro FWA, C-band', 'T-Mobile / Verizon / AT&T-style home internet from an existing mobile macro tower: 64T64R massive-MIMO sector, 100 MHz at 3.7 GHz (band n77).', 'Indoor Wi-Fi gateway the customer puts on a window sill, 2 m up, self-installed.'],
   mno_n41: ['MNO macro FWA, 2.5 GHz', 'Same as above but on T-Mobile\'s 2.5 GHz spectrum (band n41); lower frequency, less loss through trees and walls.', 'Same indoor gateway on a window sill.'],
@@ -210,10 +251,11 @@ function buildKeyTable() {
   $('#keyTbl').innerHTML = html + '</tbody>';
 }
 function renderHero() {
-  var st = HERO.stats;
-  $('#vTaranaVsNr').textContent = Math.round((st.tarana_cbrs.hu1020 / st.cbrs_nr.hu1020 - 1) * 100) + '% (' + fmtK(st.tarana_cbrs.hu1020) + ' vs ' + fmtK(st.cbrs_nr.hu1020) + ')';
-  $('#vTarana10').textContent = fmtN(st.tarana10.hu1020 - st.tarana_cbrs.hu1020) + ' homes';
-  hbars($('#chartHero'), { rows: FWA.ORDER.map(function (id) { var s = st[id]; return { label: FWA.TECH[id].short, segs: [{ v: s.hu1020, color: techColor(id), name: 'Homes at ≥100/20', text: fmtN(s.hu1020) + ' homes (' + Math.round(s.hu1020 / L.huTotal * 100) + '% of county)' }] }; }), labelW: 130, rowH: 26, max: L.huTotal * 0.75, tickFmt: fmtK, xlabel: 'Homes at ≥100 Mbps down / 20 Mbps up' });
+  var st = HERO.stats, m = tbMeta();
+  var vals = { ratio: Math.round((st.tarana_cbrs.hu1020 / st.cbrs_nr.hu1020 - 1) * 100) + '%', hu: fmtN(L.huTotal), d10: fmtN(st.tarana10.hu1020 - st.tarana_cbrs.hu1020), pct10: '+' + Math.round((st.tarana10.hu1020 / st.tarana_cbrs.hu1020 - 1) * 100) + '%', mno_out: fmtN(st.mno_out.hu1020) };
+  FWA.ORDER.forEach(function (id) { vals[id] = fmtN(st[id].hu1020); });
+  $('#vCard1').innerHTML = fillTemplate(m.card1, vals); $('#vCard2').innerHTML = fillTemplate(m.card2, vals);
+  hbars($('#chartHero'), { rows: FWA.ORDER.map(function (id) { var s = st[id]; return { label: FWA.TECH[id].short, segs: [{ v: s.hu1020, color: techColor(id), name: 'Homes at ≥100/20', text: fmtN(s.hu1020) + ' homes (' + Math.round(s.hu1020 / L.huTotal * 100) + '%)' }] }; }), labelW: 130, rowH: 26, max: L.huTotal * 0.75, tickFmt: fmtK, xlabel: 'Homes at ≥100 Mbps down / 20 Mbps up' });
   var html = '<thead><tr><th>Configuration</th><th class="num">Served (≥100/20)</th><th class="num">Underserved (25/3 to 100/20)</th><th class="num">Connects below 25/3</th><th class="num">No service</th><th class="num">km² at ≥100/20</th></tr></thead><tbody>';
   FWA.ORDER.forEach(function (id) { var s = st[id]; var pct = function (v) { return fmtN(v) + ' <span class="muted">(' + Math.round(v / L.huTotal * 100) + '%)</span>'; }; html += '<tr><td><span class="swatch" style="background:' + techColor(id) + '"></span> ' + FWA.TECH[id].short + '</td><td class="num">' + pct(s.hu1020) + '</td><td class="num">' + pct(Math.max(0, s.hu253 - s.hu1020)) + '</td><td class="num">' + pct(Math.max(0, s.huAny - s.hu253)) + '</td><td class="num">' + pct(Math.max(0, L.huTotal - s.huAny)) + '</td><td class="num">' + fmtN(s.km1020) + '</td></tr>'; });
   $('#heroTbl').innerHTML = html + '</tbody>';
@@ -231,7 +273,7 @@ function buildLandcover() {
   hbars($('#chartLandcover'), { stacked: true, title: 'A. What the land is: share of the area within 25 km of each tower, by land cover', rows: rows, labelW: 170, rowH: 24, max: 100, tickFmt: function (v) { return v + '%'; }, valFmt: function (v) { return v.toFixed(1) + '% of the area'; }, legend: leg });
   var hu = {}; for (var i = 0; i < L.W * L.H; i++) if (L.county[i]) hu[L.cls[i]] = (hu[L.cls[i]] || 0) + L.units[i];
   var dev = [21, 22, 23, 24].reduce(function (p, c) { return p + (hu[c] || 0); }, 0);
-  hbars($('#chartLandcover2'), { stacked: true, title: 'B. Where the homes are: ' + fmtN(L.huTotal) + ' county housing units by the land cover of their cell · ' + Math.round(dev / L.huTotal * 100) + '% sit on developed cells', rows: [{ label: 'Georgetown County homes', segs: groups.map(function (g) { return { v: g[1].reduce(function (p, c) { return p + (hu[c] || 0); }, 0) / L.huTotal * 100, color: g[2], name: g[0] }; }) }], labelW: 170, rowH: 24, max: 100, tickFmt: function (v) { return v + '%'; }, valFmt: function (v) { return v.toFixed(1) + '% of homes'; }, legend: leg });
+  hbars($('#chartLandcover2'), { stacked: true, title: 'B. Where the homes are: ' + fmtN(L.huTotal) + ' county housing units by the land cover of their cell · ' + Math.round(dev / L.huTotal * 100) + '% sit on developed cells', rows: [{ label: GEO.short + ' homes', segs: groups.map(function (g) { return { v: g[1].reduce(function (p, c) { return p + (hu[c] || 0); }, 0) / L.huTotal * 100, color: g[2], name: g[0] }; }) }], labelW: 170, rowH: 24, max: 100, tickFmt: function (v) { return v + '%'; }, valFmt: function (v) { return v.toFixed(1) + '% of homes'; }, legend: leg });
 }
 
 /* ===== economics ===== */
@@ -289,6 +331,7 @@ document.addEventListener('DOMContentLoaded', function () {
   initTabs(); buildKeyTable(); buildMatrix(); buildOthers(); buildYard(); buildMissing(); buildGloss(); buildParams(); buildSpectrum(); buildDiagrams(); buildWaterfall(); initLinkBudget(); initClutter(); initEcon();
   var v = document.body.getAttribute('data-ver') || 'v1'; $('#ver').textContent = v; $('#ver2').textContent = v;
   $('#heroTiles').innerHTML = '<div class="tile"><div class="l">Decoding terrain layers…</div></div>';
-  loadGeo().then(function () { initMaps(); buildLandcover(); computeHero(function () { renderEcon(); }); if ($('#tab-maps').classList.contains('active')) scheduleMap(); }).catch(function (e) { $('#heroTiles').innerHTML = '<div class="tile"><div class="l">Map layers failed to load: ' + e + '</div></div>'; });
+  $$('#tbPick button').forEach(function (b) { b.addEventListener('click', function () { switchTestbed(b.dataset.tb); }); });
+  loadGeo('sc').then(function () { applyTestbedText(); initMaps(); buildLandcover(); computeHero(function () { renderEcon(); }); if ($('#tab-maps').classList.contains('active')) scheduleMap(); }).catch(function (e) { $('#heroTiles').innerHTML = '<div class="tile"><div class="l">Map layers failed to load: ' + e + '</div></div>'; });
   matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function () { if (HERO.stats) renderHero(); });
 });

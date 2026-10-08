@@ -1,6 +1,6 @@
 # Tarana vs 5G Fixed Wireless
 
-Interactive technical explainer comparing Tarana ngFWA (G1/G2) with MNO macro FWA, dedicated 5G NR in CBRS and mmWave 5G FWA, using Georgetown County, South Carolina as a physics test bed. Single self-contained page (`index.html`): every chart, the capability matrix, the link-budget and TCO calculators and the terrain-and-clutter coverage maps are in the one file (2.7 MB, including the packed propagation layers).
+Interactive technical explainer comparing Tarana ngFWA (G1/G2) with MNO macro FWA, dedicated 5G NR in CBRS and mmWave 5G FWA, using two real-county physics test beds that the reader can switch between: Georgetown County, South Carolina (flat coastal plain, pine) and Worcester County, Massachusetts (glacial hills, deciduous forest, suburbs). Single self-contained page (`index.html`): every chart, the capability matrix, the link-budget and TCO calculators and the terrain-and-clutter coverage maps are in the one file (2.7 MB, including the packed propagation layers).
 
 Live: deployed on Railway from this repository (static site served by `serve`).
 
@@ -15,12 +15,12 @@ index.html            the built site (what Railway serves)
 package.json          `serve -s .` on $PORT, for Railway/Nixpacks
 railway.json          build/deploy settings
 source/site/          page sources: head.html, body.html, model.js (physics + link budgets), app1-3.js (charts, maps, calculators), build.py (assembler), test.js (node-side coverage check)
-source/geo/           propagation pipeline (Python): towers.py (FCC ASR extract), grid.py (DEM + NLCD to a 90 m UTM grid), county.py, vectors.py (Census blocks, roads, places), itm.py + model.py (Longley-Rice radials, foliage geometry), pack.py (layers to PNG/JSON), geodata.json (packed output embedded in index.html)
+source/geo/           propagation pipeline (Python). pipeline.py is the parametrised version used for Worcester County (stages: grid, vectors, model, pack; config dict at the top); towers.py, grid.py, county.py, vectors.py, itm.py, model.py and pack.py are the original Georgetown County scripts. geodata.json (SC) and ma/geodata.json (MA) are the packed outputs embedded in index.html
 ```
 
 ## Rebuilding the page
 
-`source/site/build.py` concatenates `head.html`, `body.html`, the JS files and `../geo/geodata.json` into `index.html` (full document) and `fwa-explainer.html` (artifact body without skeleton):
+`source/site/build.py` concatenates `head.html`, `body.html`, the JS files and both packed test beds (`../geo/geodata.json`, `../geo/ma/geodata.json`) into `index.html` (full document) and `fwa-explainer.html` (artifact body without skeleton):
 
 ```
 cd source/site && python build.py v7

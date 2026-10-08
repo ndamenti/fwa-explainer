@@ -15,6 +15,7 @@
   </nav>
   <span class="ver" id="ver">v1</span>
 </div></div>
+<div class="tbbar"><div class="wrap"><span class="eyebrow">Test bed</span><div id="tbPick"><button type="button" data-tb="sc" aria-pressed="true">Georgetown County, SC</button><button type="button" data-tb="ma" aria-pressed="false">Worcester County, MA</button></div><span class="small">Every map, count and calculator on this site recomputes for the chosen county.</span></div></div>
 
 <main class="wrap">
 
@@ -22,40 +23,41 @@
 <section class="panel" id="tab-verdict">
   <div class="hero">
     <div>
-      <div class="eyebrow">Terrestrial fixed wireless · technical explainer · test bed: Georgetown County, South Carolina</div>
+      <div class="eyebrow">Terrestrial fixed wireless · technical explainer · two real-county test beds</div>
       <h1 style="margin-top:10px">Tarana vs 5G fixed wireless</h1>
-      <p class="thesis">In the Lowcountry the trees decide, not the towers. Every sub-7 GHz radio sees near free-space loss to 25 km over this ground (highest point in the county: 39 m). What separates the technologies is how many decibels each can spend on pine canopy, swamp forest and house walls at the customer's end, and whether the uplink survives the trip back.</p>
+      <div class="tbhero"><span class="eyebrow">Showing results for</span><span class="name tbname">Georgetown County, South Carolina</span><span class="tag" id="tbTag"></span></div>
+      <p class="thesis" id="tbThesis"></p>
       <p class="small">Every number is tagged <span class="tag m">M</span> measured, <span class="tag c">C</span> claim-anchored or <span class="tag d">D</span> derived here, with the source in the last tab. Coverage figures below are computed live from a Longley-Rice terrain run on three real FCC-registered towers plus a land-cover clutter model; change any assumption on the map tab and they move.</p>
     </div>
     <div>
-      <div class="eyebrow">Housing units in Georgetown County reachable at ≥100/20 Mbps from the same three towers <span class="tag d">D</span></div>
+      <div class="eyebrow">Homes in <span class="tbshort">Georgetown County, SC</span> reachable at ≥100/20 Mbps from three real towers <span class="tag d">D</span></div>
       <div class="tiles" id="heroTiles"></div>
-      <div class="small">Of <span class="num" id="heroHU">—</span> housing units in the county (2020 Census blocks), <span class="num" id="heroInRange">—</span> lie within 25 km of at least one of the three sites. Leaf-on, median propagation, 4 dB fade margin, default link budgets.</div>
+      <div class="small"><span id="heroHomes"></span> Leaf-on, median propagation, 4 dB fade margin, default link budgets.</div>
     </div>
   </div>
 
   <div class="cols">
-    <div class="card">
+    <div class="card" id="vCard1">
       <h3>What the model says</h3>
       <p>Tarana's edge is real and it is mostly antenna physics. Sixteen radio chains at the base node and eight at the remote node buy roughly 9 dB of uplink and 3–4 dB of downlink over a WISP-grade 5G NR sector with a 17 dBi outdoor CPE, and the two to four 40 MHz carriers buy capacity on top. In this clutter that translates into about <span id="vTaranaVsNr">—</span> more county homes at 100/20 from the same towers.</p>
       <p>The larger lever is where the CPE sits. Moving an MNO C-band gateway from a window sill to a 17 dBi roof panel at 6 m roughly doubles its 100/20 footprint; raising Tarana's customer radio (the Remote Node, RN) from a 6 m eave mount to a 10 m pole adds another <span id="vTarana10">—</span>. No operator gets around the pine canopy; they only choose how much of the link budget to spend on it.</p>
     </div>
-    <div class="card">
+    <div class="card" id="vCard2">
       <h3>What it means commercially</h3>
       <p>MNO macro FWA is a capacity product sold address by address into fallow mobile capacity. It wins on price and zero truck rolls, and it is already shrinking in cities where sectors fill up. Dedicated CBRS 5G NR reaches about two-thirds of Tarana's footprint for roughly 40% of the sector hardware cost, but with half the spectrum per sector and a 3GPP vendor base that just lost Cambium's cnRanger and never gained a strong CBRS small-cell champion.</p>
       <p>Tarana is the performance leader and a single-vendor bet: a 4-BN G2 site is about $155k of radios, the RN costs 3–5× a 3GPP CPE, and the company is private, flat on its last three rounds, and dependent on CBRS and 6 GHz rules it does not control. mmWave FWA covers nothing here beyond the first few hundred metres of open ground.</p>
     </div>
   </div>
 
-  <div class="secthead"><span class="eyebrow">Key</span><h2>The six configurations compared on this page</h2></div>
-  <p>Every chart and map on the site uses these six, each with one fixed colour. The three Tarana rows are one hardware family (G1 Base Node + Remote Node, or G2) running in three different bands: CBRS, unlicensed 5 GHz and 6 GHz under AFC. They are separated because the bands have very different power limits, bandwidth and interference, so the same radio covers very different footprints. The companion names are explained in full on the "How they work" and "Capability matrix" tabs.</p>
+  <div class="secthead"><span class="eyebrow">Key</span><h2>The seven configurations compared on this page</h2></div>
+  <p>Every chart and map on the site uses these seven, each with one fixed colour. The three Tarana rows are one hardware family (G1 Base Node + Remote Node, or G2) running in three different bands: CBRS, unlicensed 5 GHz and 6 GHz under AFC. They are separated because the bands have very different power limits, bandwidth and interference, so the same radio covers very different footprints. The companion names are explained in full on the "How they work" and "Capability matrix" tabs.</p>
   <div class="tblwrap"><table id="keyTbl" class="compact wrap"></table></div>
 
-  <div class="secthead"><span class="eyebrow">Fig. 1</span><h2>Homes each configuration can serve from the same three towers</h2></div>
-  <p>One bar per configuration, in its colour. The bar is the number of Georgetown County homes (2020 Census, 34,587 in the county) that would get at least 100 Mbps down and 20 Mbps up from the best of the three modelled towers, with the standard customer equipment listed in the key above. Everything else about the model is at its default setting. Because the test needs both directions, the ranking is set by the uplink: on downlink alone the MNO macro radio would rank first in forest (see the Clutter tab), but its indoor gateway cannot get 20 Mbps back to the tower through the trees.</p>
+  <div class="secthead"><span class="eyebrow">Fig. 1</span><h2>Homes each configuration can serve from the same three towers in <span class="tbshort">Georgetown County, SC</span></h2></div>
+  <p>One bar per configuration, in its colour. The bar is the number of homes in the test-bed county (2020 Census blocks, counted within the modelled area) that would get at least 100 Mbps down and 20 Mbps up from the best of the three modelled towers, with the standard customer equipment listed in the key above. Everything else about the model is at its default setting. Because the test needs both directions, the ranking is set by the uplink: on downlink alone the MNO macro radio would rank first in forest (see the Clutter tab), but its indoor gateway cannot get 20 Mbps back to the tower through the trees.</p>
   <figure class="figure"><div id="chartHero"></div><figcaption>Homes at ≥100/20 Mbps (the FCC "served" line and the BEAD target). The table below adds the slower service classes. <span class="tag d">D</span> Longley-Rice + NLCD clutter model; the map tab lets you change every assumption and recomputes these counts.</figcaption></figure>
   <div class="tblwrap"><table id="heroTbl" class="compact"></table></div>
-  <div class="cap">Served = ≥100 down / 20 up. Underserved = at least 25/3 but below 100/20. Connects = some service below 25/3. Numbers are homes in Georgetown County; percentages are of the county's 34,587 homes.</div>
+  <div class="cap">Served = ≥100 down / 20 up. Underserved = at least 25/3 but below 100/20. Connects = some service below 25/3. Numbers are homes in the test-bed county within the modelled area; percentages are of that total.</div>
 
   <div class="secthead"><span class="eyebrow">Fig. 1b</span><h2>What moving the customer antenna does</h2></div>
   <p>Same towers, same radios; only the customer end changes. The standard placement is how each product is normally sold or installed. The alternative is a better placement a willing operator could use.</p>
@@ -149,7 +151,7 @@
 <!-- ============================ CLUTTER ============================ -->
 <section class="panel" id="tab-clutter">
   <div class="eyebrow">Tab 5</div><h2>Performance through ground clutter</h2>
-  <p class="lead">Georgetown County is 813 square miles of land, of which about three-quarters is pine plantation, swamp forest and marsh. The clutter model maps each NLCD 2021 land-cover class to a representative obstacle height, a foliage flag and (for developed classes) a building-clutter term; the ray geometry from the real tower then decides how much foliage each customer's link crosses.</p>
+  <p class="lead">Both test-bed counties are mostly forest: Georgetown County (813 sq mi) is pine plantation, swamp forest and marsh on a flat coastal plain; Worcester County (1,511 sq mi) is deciduous and mixed forest on glacial hills, with Worcester and its suburbs in the middle. The clutter model maps each NLCD 2021 land-cover class to a representative obstacle height, a foliage flag and (for developed classes) a building-clutter term; the ray geometry from the real tower then decides how much foliage each customer's link crosses.</p>
   <div class="split">
     <div class="ctl sticky card">
       <div class="fld"><label>Distance from tower</label><div class="seg" id="clDist"></div></div>
@@ -162,7 +164,7 @@
       <div class="callout"><p><b>Read this with the uplink in mind.</b> On downlink alone the MNO macro radio wins in forest: a 79 dBm beam against Tarana's 48.5 dBm carrier is a 30 dB head start, which is why MNO home internet works with an indoor box at all. But the same trees sit on the return path from a 29 dBm gateway, and the 20 Mbps uplink in the 100/20 definition fails long before the downlink does. That is why Fig. 1 on the Verdict tab, which requires both directions, ranks the configurations differently from a downlink-only view here. The default view below dims every bar that fails the 100/20 test so the two tabs agree.</p></div>
       <figure class="figure"><div id="chartClutter"></div><figcaption>Achievable rate by land-cover class for every configuration at the chosen distance and season. Technologies with no link in a class show a dash. Hover a bar for the exact figures. <span class="tag d">D</span></figcaption></figure>
       <figure class="figure"><h3>Clutter loss by class and band (dB, CPE at 6 m, leaf-on)</h3><div class="tblwrap" style="border:0"><table id="clutterTbl" class="compact"></table></div><figcaption>Foliage term from ITU-R P.833 one-terminal-in-woodland (A<sub>m</sub> = 1.37 f<sup>0.42</sup>; Southern England measured 46 dB at 3.6 GHz through 200 m of mixed forest), building term from ITU-R P.2108 scaled by development intensity and CPE height below the roof line. <span class="tag c">C</span> model constants, <span class="tag d">D</span> values.</figcaption></figure>
-      <div class="card" style="margin-top:14px"><h3>Why the maps look worse than the home counts</h3><p>Two different questions, so two charts. Chart A asks what the <em>ground</em> is around each tower: mostly pine and swamp forest, where every radio struggles. Chart B asks where the <em>homes</em> are: about 60% sit on "developed" cells (yards, streets, small towns) that make up only 7–10% of the land. Homes are in the clearings. That is why the coverage maps, which colour area, look harsher than Fig. 1 on the Verdict tab, which counts homes, and why every configuration's housing-weighted coverage beats its area coverage.</p>
+      <div class="card" style="margin-top:14px"><h3>Why the maps look worse than the home counts</h3><p>Two different questions, so two charts. Chart A asks what the <em>ground</em> is around each tower: mostly forest, where every radio struggles. Chart B asks where the <em>homes</em> are: most sit on "developed" cells (yards, streets, towns) that make up a small share of the land. Homes are in the clearings. That is why the coverage maps, which colour area, look harsher than Fig. 1 on the Verdict tab, which counts homes, and why every configuration's housing-weighted coverage beats its area coverage.</p>
       <figure class="figure" style="margin:0 0 10px"><div id="chartLandcover"></div><figcaption>NLCD 2021 classes grouped; open ocean beyond the land-cover dataset is counted as water. <span class="tag m">M</span></figcaption></figure>
       <figure class="figure" style="margin:0"><div id="chartLandcover2"></div><figcaption>2020 Census block housing counts spread over each block's 90 m cells, then grouped by the cell's land cover. <span class="tag m">M</span></figcaption></figure></div>
     </div>
@@ -171,7 +173,7 @@
 
 <!-- ============================ MAPS ============================ -->
 <section class="panel" id="tab-maps">
-  <div class="eyebrow">Tab 6</div><h2>Coverage maps: three real towers, real terrain, real land cover</h2>
+  <div class="eyebrow">Tab 6</div><h2>Coverage maps: three real towers in <span class="tbshort">Georgetown County, SC</span></h2>
   <p class="lead">Longley-Rice (ITM v1.2.2) point-to-point losses were computed on USGS 3DEP elevation along 360 radials to 25 km from each tower, for three bands and three CPE heights; foliage depth and clutter line-of-sight come from the same ray geometry against NLCD 2021 obstacle heights. The page recomputes the link budget for every 90 m cell when you change a control.</p>
   <div class="split">
     <div class="ctl sticky card">
@@ -190,9 +192,9 @@
     <div>
       <div class="mapbox" id="mapbox"><canvas id="mapCanvas"></canvas><svg class="ov" id="mapOv"></svg></div>
       <div class="cap" id="mapCap"></div>
-      <div class="card" style="margin-top:14px"><h3 id="mpStatsTitle">Homes covered</h3><div class="statbars" id="mpStats"></div><div class="cap">Georgetown County housing units (2020 Census blocks, 34.6k in county) by best tier across the selected site(s). Cells outside the county are drawn but not counted.</div></div>
+      <div class="card" style="margin-top:14px"><h3 id="mpStatsTitle">Homes covered</h3><div class="statbars" id="mpStats"></div><div class="cap">Housing units in the test-bed county (2020 Census blocks) by best tier across the selected site(s). Cells outside the county are drawn but not counted.</div></div>
       <div class="card" style="margin-top:14px" id="mpCompareCard" hidden><h3>All technologies, same settings</h3><div class="tblwrap" style="border:0"><table id="mpCompareTbl"></table></div></div>
-      <div class="card" style="margin-top:14px"><h3>The three sites</h3><div class="tblwrap" style="border:0"><table id="siteTbl" class="compact wrap"></table></div><div class="cap">All three are registered in the FCC Antenna Structure Registration database (status Constructed). Radio centre heights are modelling choices below the structure top; the Plantersville structure is a 146 m tall tower on which a WISP would realistically mount at 60–90 m. The 25 km study radius is the model's, not a claim about any product.</div></div>
+      <div class="card" style="margin-top:14px"><h3>The three sites</h3><div class="tblwrap" style="border:0"><table id="siteTbl" class="compact wrap"></table></div><div class="cap">All three are registered in the FCC Antenna Structure Registration database (status Constructed). Radio centre heights are modelling choices below the structure top; the Plantersville structure is a 146 m tall tower on which a WISP would realistically mount at 60–90 m. The 25 km study radius is the model's, not a claim about any product. In Worcester County the Paxton structure is a 101 m broadcast tower on a 407 m hilltop, mounted at 60 m.</div></div>
     </div>
   </div>
 </section>
@@ -203,7 +205,7 @@
   <p class="lead">Coverage says who <em>can</em> be served; capacity says how many actually are, and the per-sector radio cost decides what each passing and each subscriber costs. The calculator takes passings per site from the coverage model (or your own number) and applies published hardware prices, lease and backhaul benchmarks.</p>
   <div class="split">
     <div class="ctl sticky card">
-      <div class="fld"><label for="ecPass">Passings per site</label><div class="seg" id="ecPassMode"></div><div class="row" style="margin-top:6px"><input type="range" id="ecPass" min="200" max="8000" step="100" value="2000"><output id="ecPassO">2,000</output></div></div>
+      <div class="fld"><label for="ecPass">Passings per site</label><div class="seg" id="ecPassMode"></div><div class="row" style="margin-top:6px"><input type="range" id="ecPass" min="200" max="30000" step="100" value="2000"><output id="ecPassO">2,000</output></div></div>
       <div class="fld"><label for="ecTake">Take rate (%)</label><div class="row"><input type="range" id="ecTake" min="5" max="60" step="1" value="25"><output id="ecTakeO">25%</output></div></div>
       <div class="fld"><label for="ecArpu">ARPU ($/month)</label><div class="row"><input type="range" id="ecArpu" min="35" max="130" step="1" value="65"><output id="ecArpuO">$65</output></div></div>
       <div class="fld"><label for="ecBh">Busy-hour demand per subscriber (Mbps)</label><div class="row"><input type="range" id="ecBh" min="2" max="15" step="0.5" value="5.2"><output id="ecBhO">5.2</output></div></div>
@@ -268,7 +270,7 @@
   <div class="eyebrow">Tab 11</div><h2>Method, parameters, sources and glossary</h2>
   <div class="cols">
     <div class="card"><h3>Propagation pipeline</h3>
-      <p>Terrain: USGS 3DEP 1 arc-second (≈30 m) elevation, resampled to a 90 m UTM 17N grid. Land cover: NLCD 2021. Towers: FCC Antenna Structure Registration weekly extract (4 Oct 2026), county FIPS 45043, status Constructed; three selected for clutter diversity. Housing: 2020 Census block housing counts (TIGER 2023 TABBLOCK20), distributed evenly over each block's cells.</p>
+      <p>Two test beds, same pipeline. Terrain: USGS 3DEP 1 arc-second (≈30 m) elevation, resampled to a 90 m UTM grid (zone 17N for Georgetown County, SC; zone 19N for Worcester County, MA). Land cover: NLCD 2021. Towers: FCC Antenna Structure Registration weekly extract (4 Oct 2026), county FIPS 45043 and 25027, status Constructed; three per county selected for terrain and clutter diversity. Housing: 2020 Census block housing counts (TIGER 2023 TABBLOCK20), distributed evenly over each block's cells.</p>
       <p>Path loss: ITS Irregular Terrain Model v1.2.2 (Longley-Rice) in point-to-point mode via the <span class="mono">itmlogic</span> port, median (50% time, 50% location, 50% confidence), vertical polarisation, continental temperate climate, N<sub>s</sub> = 314, average ground (ε = 15, σ = 0.005 S/m), 360 radials per tower, 90 m steps to 25 km, at 2.6, 3.6 and 6.0 GHz and CPE heights of 2, 6 and 10 m; free-space inside 1 km. Other bands are shifted by 20 log(f/f<sub>layer</sub>). 28 GHz is outside ITM's range and uses free-space loss plus gaseous and rain terms with a clutter line-of-sight test.</p>
       <p>Clutter: each NLCD class carries a representative obstacle height (pine 22 m, mixed 21 m, deciduous 20 m, swamp forest 18 m, developed 5–15 m, shrub 3 m). Along every radial the ray from the antenna to the CPE is tested against terrain plus obstacle height with 4/3-earth bulge; foliage depth is the length of forested cells in the obstructed run adjacent to the CPE, plus half a cell when the CPE itself stands inside canopy. Foliage loss uses ITU-R P.833 (A = A<sub>m</sub>(1−e<sup>−dγ/A<sub>m</sub></sup>), A<sub>m</sub> = 1.37 f<sub>MHz</sub><sup>0.42</sup>, γ scaled from P.833 Table 1 as 0.34(f/2117)<sup>0.8</sup> dB/m). Developed classes add an ITU-R P.2108 low-angle median term (23.5 + 9.6 log f<sub>GHz</sub>) scaled by intensity (0.5/0.8/1.0/1.2) and by the CPE's height below the roof line. Indoor gateways add 3GPP TR 38.901 §7.4.3 penetration. Leaf-off multiplies deciduous (0.7), mixed (0.8), swamp forest (0.85) and shrub (0.9).</p>
       <p>Link budget: SINR = EIRP + G<sub>rx</sub> − L − penalty − (−174 + 10 log B + NF) − fade − interference margin. Spectral efficiency 0.8·log<sub>2</sub>(1+SINR) capped at the technology's peak, zero below −5 dB; rank 1/2/4 layers at <12 / <20 / ≥20 dB capped by the CPE; uplink picks the sub-band split (1 to 1/16 of the carrier) that maximises rate. Fixed-beam CPEs lose a user-set 4 dB of effective gain in NLOS (angular spread); indoor gateways 1 dB; adaptive arrays 0 dB.</p>
@@ -278,7 +280,7 @@
   <div class="secthead"><span class="eyebrow">Limits</span><h2>What the model does not do</h2></div>
   <div class="cols">
     <div class="card"><p>It is a median model. Location variability (σ ≈ 8 dB in forest per P.833) is folded into a single fade margin instead of being carried as a distribution, so edges are sharper than reality. It has no building footprints; clutter at the CPE is inferred from the 30 m land-cover class, which under-represents the clearing around a rural house and over-represents trees on a developed parcel. Foliage constants are extrapolated from 0.1–2.1 GHz measurements with one 3.6 GHz anchor and none at 6 GHz; a Lowcountry drive test is the single most valuable calibration (item 14 on the previous tab). Multipath exploitation by adaptive arrays is represented only as the absence of the fixed-panel NLOS penalty. Capacity, scheduling and interference between the three sites are handled on the economics tab, not in the map.</p></div>
-    <div class="card"><p>The mmWave case is deliberately generous (tower-top mounting) and still fails; a pole-mounted small-cell grid would need its own study. The MNO case assumes the macro site carries a C-band or n41 FWA sector pointed at the county, which is true for the Georgetown site and plausible for the other two; it does not model the fallow-capacity gate that decides whether an address is actually offered service. Starlink is not mapped because its coverage is not a propagation question. Finally, Georgetown County itself is close to fully served by fiber and cable after the HTC and Spectrum builds (rural unserved households fell from 27% to under 3%); the county is used as a physics test bed, and the results transfer to any pine-belt county, not as a business case for this county.</p></div>
+    <div class="card"><p>The mmWave case is deliberately generous (tower-top mounting) and still fails; a pole-mounted small-cell grid would need its own study. The MNO case assumes the macro site carries a C-band or n41 FWA sector pointed at the county, which is true for the Georgetown site and plausible for the other two; it does not model the fallow-capacity gate that decides whether an address is actually offered service. Starlink is not mapped because its coverage is not a propagation question. Finally, both counties are used as physics test beds, not business cases: Georgetown County is close to fully served by fiber and cable after the HTC and Spectrum builds, and Worcester County has near-universal cable. For Worcester County the home counts cover the part of the county inside the three 25 km study windows (about 297k of 352k housing units).</p></div>
   </div>
   <div class="secthead"><span class="eyebrow">Glossary</span><h2>Terms</h2></div>
   <div class="gloss" id="gloss"></div>
